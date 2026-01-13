@@ -8,7 +8,9 @@ import { DisponibilidadView } from '../models/disponivilidadView.model';
   providedIn: 'root',
 })
 export class DisponibilidadDoctorService {
-  private APIURL = 'http://localhost:8080/api/terapia/disponibilidad';
+  //private APIURL = 'http://localhost:8080/api/terapia/disponibilidad';
+  private APIURL = 'https://sistema-salud-backend.onrender.com/api/terapia/disponibilidad';
+
 
   constructor(private http: HttpClient) {}
 

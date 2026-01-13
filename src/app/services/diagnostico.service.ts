@@ -6,7 +6,8 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class DiagnosticoService {
-  private APIURL = 'http://localhost:8080/api/terapia/diagnostico';
+  //private APIURL = 'http://localhost:8080/api/terapia/diagnostico';
+  private APIURL = 'https://sistema-salud-backend.onrender.com/api/terapia/diagnostico';
 
   constructor(private http: HttpClient) {}
 

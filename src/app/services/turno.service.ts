@@ -6,7 +6,8 @@ import { Turno } from '../models/turno.model';
   providedIn: 'root',
 })
 export class TurnoService {
-  private API_URL  = 'http://localhost:8080/api/terapia/turno';
+  //private API_URL  = 'http://localhost:8080/api/terapia/turno';
+  private API_URL  = 'https://sistema-salud-backend.onrender.com/api/terapia/turno';
 
   constructor(private http: HttpClient) {}
 

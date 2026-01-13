@@ -6,7 +6,8 @@ import { Cita } from '../models/cita.model';
 @Injectable({ providedIn: 'root', })
 export class CitaService {
 
-  private api = 'http://localhost:8080/api/terapia/cita';
+  //private api = 'http://localhost:8080/api/terapia/cita';
+  private api = 'https://sistema-salud-backend.onrender.com/api/terapia/cita';
 
   constructor(private http: HttpClient) {}  
 

@@ -6,7 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SesionService {
-  private api = 'http://localhost:8080/api/terapia/sesion';
+  //private api = 'http://localhost:8080/api/terapia/sesion';
+  private api = 'https://sistema-salud-backend.onrender.com/api/terapia/sesion';
+
 
   constructor(private http: HttpClient) {}
 

@@ -7,7 +7,8 @@ import { Paciente } from '../models/paciente.model';
 })
 export class PacienteService {
   
-  private APIURL = 'http://localhost:8080/api/terapia/paciente';
+  //private APIURL = 'http://localhost:8080/api/terapia/paciente';
+  private APIURL = 'https://sistema-salud-backend.onrender.com/api/terapia/paciente';
   pacientes: Paciente[] = [];
   textoPaciente = '';
 

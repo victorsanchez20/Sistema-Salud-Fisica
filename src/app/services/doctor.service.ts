@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 })
 export class DoctorService {
   
-  private API_URL  = 'http://localhost:8080/api/terapia/doctor';
+  //private API_URL  = 'http://localhost:8080/api/terapia/doctor';
+  private API_URL  = 'https://sistema-salud-backend.onrender.com/api/terapia/doctor';
 
   constructor(private http: HttpClient) {}
 
