@@ -1,0 +1,60 @@
+.doctor-container {
+  padding: 20px;
+}
+
+.doctor-card {
+  background: #f5f7fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.doctor-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.paciente-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.loading {
+  font-style: italic;
+}
+
+.tabla-pacientes {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tabla-pacientes th {
+  background: #2c3e50;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.tabla-pacientes td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabla-pacientes tbody tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tabla-pacientes tbody tr:hover {
+  background: #f1f5f9;
+}
+
+.doctor-card {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}

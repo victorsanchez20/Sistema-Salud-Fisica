@@ -1,0 +1,136 @@
+<section class="historyclinical">
+  <div class="hc-card">
+
+    <!-- HEADER -->
+    <div class="hc-header">
+      <div class="hc-avatar">
+        <img src="https://img.freepik.com/vector-gratis/gradiente-azul-usuario_78370-4692.jpg?semt=ais_hybrid&w=740&q=80" alt="Paciente">
+      </div>
+
+      <div class="hc-title" *ngIf="paciente as p">
+        <h1>Historia Clínica</h1>
+        <p>
+          HC N°
+          <strong *ngIf="!editar">{{ p.hc }}</strong>
+
+          <input
+            *ngIf="editar"
+            [(ngModel)]="p.hc"
+            class="hc-input"
+          />
+        </p>
+      </div>
+    </div>
+
+    <!-- DATOS PERSONALES -->
+    <div class="hc-section">
+      <h3>Datos Personales</h3>
+      <button class="btn-edit" (click)="editar = !editar">
+        {{ editar ? 'Cancelar' : 'Editar'}}
+      </button>
+      <button class="btn-delete" (click)="eliminarPaciente()">
+        Eliminar
+      </button>
+      <div class="hc-grid" *ngIf="paciente">
+
+        <div>
+          <span>Apellido Paterno</span>
+          <p *ngIf="!editar">{{ paciente.apaterno }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.apaterno">
+        </div>
+
+        <div>
+          <span>Apellido Materno</span>
+          <p *ngIf="!editar">{{ paciente.amaterno }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.amaterno">
+        </div>
+
+        <div>
+          <span>Nombres</span>
+          <p *ngIf="!editar">{{ paciente.nombre }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.nombre">
+        </div>
+
+        <div>
+          <span>DNI</span>
+          <p *ngIf="!editar">{{ paciente.dni }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.dni">
+        </div>
+
+        <div>
+          <span>Teléfono</span>
+          <p *ngIf="!editar">{{ paciente.telefono }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.telefono">
+        </div>
+
+        <div>
+          <span>Dirección</span>
+          <p *ngIf="!editar">{{ paciente.direccion }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.direccion">
+        </div>
+
+      </div>
+
+      <!-- BOTÓN GUARDAR -->
+      <button *ngIf="editar" class="btn-save" (click)="guardarPaciente()">
+        Guardar cambios
+      </button>
+
+    </div>
+
+
+    <div class="hc-section">
+      <h3>Información Médica</h3>
+
+      <table
+        class="hc-table"
+        *ngFor="let cita of citas; trackBy: trackByCita; let i = index"
+      >
+
+        <!-- THEAD POR CITA -->
+        <thead (click)="toggleCita(i)" class="hc-toggle">
+          <tr class="hc-group-header">
+            <th colspan="5">
+              Sesión {{ cita.sesiones.length || 0 }}
+              &nbsp;–&nbsp;
+              {{ cita.id_diagnostico.nombre }}
+              &nbsp;–&nbsp;
+              {{ cita.id_doctor.nombre }}
+              <span class="hc-arrow">
+                {{ isOpen(i) ? '▲' : '▼' }}
+              </span>
+            </th>
+          </tr>
+
+          <tr *ngIf="isOpen(i)">
+            <th>Fecha cita</th>
+            <th>Sesión</th>
+            <th>Fecha sesión</th>
+            <th>Hora</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <!-- TBODY POR CITA -->
+        <tbody *ngIf="isOpen(i)">
+
+          <!-- CUANDO TIENE SESIONES -->
+          <tr *ngFor="let sesion of cita.sesiones; trackBy: trackBySesion">
+            <td>{{ cita.fecha_creacion | date:'dd/MM/yyyy' }}</td>
+            <td>{{ sesion.numero_sesion }}°</td>
+            <td>{{ sesion.fecha | date:'dd/MM/yyyy' }}</td>
+            <td>{{ sesion.fecha | date:'HH:mm' }}</td>
+            <td>{{ sesion.estado === 1 ? 'Registrada' : 'Pendiente' }}</td>
+          </tr>
+
+          <!-- CUANDO NO TIENE SESIONES -->
+          <tr *ngIf="cita.sesiones.length === 0">
+            <td colspan="5">Sin sesiones registradas</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>

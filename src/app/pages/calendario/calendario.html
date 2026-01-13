@@ -1,0 +1,114 @@
+<section class="calendar-container">
+
+  <header class="calendar-header">
+    <h1>📅 Calendario de Turnos</h1>
+
+    <input
+      type="file"
+      accept=".xlsx,.xls"
+      (change)="cargarExcel($event)">
+    
+    <button (click)="guardarEnBD()">
+      💾 Guardar en BD
+    </button>
+  </header>
+
+  <div class="calendar">
+    <div class="calendar-controls">
+      <select [(ngModel)]="mes">
+        <option *ngFor="let m of meses" [value]="m.value">
+          {{ m.label }} 
+        </option>
+      </select>
+
+      <select [(ngModel)]="anio">
+        <option *ngFor="let a of anios">{{ a }}</option>
+      </select>
+    </div>
+
+
+    <div class="calendar-days">
+      <span *ngFor="let d of diasSemana">{{ d }}</span>
+    </div>
+
+    <div class="calendar-grid">
+      <div class="day" *ngFor="let day of calendario">
+
+        <div class="day-number">{{ day.numero }}</div>
+
+        <div
+          class="turno"
+          *ngFor="let t of day.turnos"
+          [ngClass]="t.turno">
+          {{ t.turno }} - {{ t.nombre }}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="carousel">
+
+  <!-- SLIDES DE CALENDARIOS GUARDADOS -->
+    <div
+      class="slide"
+      *ngFor="let cal of calendariosGuardados"
+      (click)="abrirCalendarioModal(cal)"
+    >
+      <h3>{{ meses[cal.mes - 1].label }} {{ cal.anio }}</h3>
+      <p>{{ cal.totalTurnos }} turnos registrados</p>
+      <button
+        class="btn-delete"
+        (click)="eliminarCalendario(cal, $event)">
+        🗑 Eliminar
+    </button>
+    </div>
+    <!-- SLIDE NUEVO CALENDARIO -->
+    <div
+      class="slide new"
+      [class.active]="slideActivo === calendariosGuardados.length"
+      (click)="nuevoCalendario()"
+    >
+      <h3>➕ Nuevo calendario</h3>
+      <p>Crear turnos del mes</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- MODAL CALENDARIO -->
+<div class="modal-backdrop" *ngIf="mostrarModal">
+
+  <div class="modal">
+
+    <header class="modal-header">
+      <h2>
+        {{ meses[modalMes - 1].label }} {{ modalAnio }}
+      </h2>
+      <button (click)="cerrarModal()">✖</button>
+    </header>
+
+    <div class="calendar-days">
+      <span *ngFor="let d of diasSemana">{{ d }}</span>
+    </div>
+
+    <div class="calendar-grid">
+      <div class="day" *ngFor="let day of modalCalendario">
+
+        <div class="day-number">{{ day.numero }}</div>
+
+        <div
+          class="turno"
+          *ngFor="let t of day.turnos"
+          [ngClass]="t.turno">
+          {{ t.turno }} - {{ t.nombre }}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

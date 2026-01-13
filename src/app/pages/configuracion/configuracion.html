@@ -1,0 +1,263 @@
+<section class="catalogos-container">
+  <!-- TERAPISTAS -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Terapistas</h3>
+      <button class="btn-primary" (click)="openTerapistaModal()">+ Agregar</button>
+    </div>
+
+    <input class="search" type="text" placeholder="Buscar terapista">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Apellidos y Nombres</th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of doctor"
+        (click)="irTurnosPaciente(d.nombre)"
+        style="cursor: pointer;">
+          <td>{{ d.id }}</td>
+          <td>{{ d.nombre }}</td>
+
+          <td class="td-actions">
+            <div class="actions">
+              <button class="btn-edit" (click)="editarDoctor(d); $event.stopPropagation()">Editar</button>
+              <button class="btn-delete" (click)="eliminarDoctor(d.id!); $event.stopPropagation()">Eliminar</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="doctor.length === 0">
+          <td colspan="3" class="empty">
+            No hay doctores registrados
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIAGNÓSTICOS -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Diagnósticos</h3>
+      <button class="btn-primary" (click)="openDiagnosticoModal()">+ Agregar</button>
+    </div>
+
+    <input class="search" type="text" placeholder="Buscar diagnóstico">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of diagnostico">
+          <td>{{ d.id }}</td>
+          <td>{{ d.nombre }}</td>
+          <td class="td-actions">
+            <div class="actions">
+              <button class="btn-edit" (click)="editarDiagnostico(d)">Editar</button>
+              <button class="btn-delete" (click)="eliminarDiagnostico(d.id!)">Eliminar</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="diagnostico.length === 0">
+          <td colspan="3" class="empty">
+            No hay diagnósticos registrados
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TURNOS -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Turnos</h3>
+      <button class="btn-primary" (click)="openTurnoModal()">+ Agregar</button>
+    </div>
+
+    <input class="search" type="text" placeholder="Buscar turno">
+
+   <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Código</th>
+          <th>Hora inicio</th>
+          <th>Hora fin</th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of turnos">
+          <td>{{ t.id }}</td>
+          <td>{{ t.codigo }}</td>
+          <td>{{ t.hora_inicio }}</td>
+          <td>{{ t.hora_fin }}</td>
+          <td class="td-actions">
+            <div class="actions">
+              <button class="btn-edit" (click)="editarTurno(t)">Editar</button>
+              <button class="btn-delete" (click)="eliminarTurno(t.id!)">Eliminar</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="turnos.length === 0">
+          <td colspan="5" class="empty">
+            No hay turnos registrados
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MODAL TERAPISTA -->
+<div class="modal-backdrop" *ngIf="showTerapista">
+  <div class="modal">
+
+    <h3>Agregar Terapista</h3>
+
+    <form [formGroup]="doctorForm" (ngSubmit)="guardarDoctor()">
+
+      <div class="form-group">
+        <label>Apellidos y nombres</label>
+        <input
+          type="text"
+          placeholder="Ingrese apellidos y nombres"
+          formControlName="nombre"
+        />
+
+        <!-- VALIDACIÓN -->
+        <small class="error"
+          *ngIf="doctorForm.get('nombre')?.invalid && doctorForm.get('nombre')?.touched">
+          El nombre es obligatorio
+        </small>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeTerapistaModal()">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="doctorForm.invalid">
+          Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+<!-- MODAL DIAGNÓSTICO -->
+<div class="modal-backdrop" *ngIf="showDiagnostico">
+  <div class="modal">
+
+    <h3>Agregar Diagnóstico</h3>
+
+    <form [formGroup]="diagnosticoForm" (ngSubmit)="guardarDiagnostico()">
+
+      <div class="form-group">
+        <label>Nombre del diagnóstico</label>
+        <input
+          type="text"
+          placeholder="Ingrese el diagnóstico"
+          formControlName="nombre"
+        />
+
+        <!-- VALIDACIÓN -->
+        <small class="error"
+          *ngIf="diagnosticoForm.get('nombre')?.invalid && diagnosticoForm.get('nombre')?.touched">
+          El diagnóstico es obligatorio
+        </small>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeDiagnosticoModal()">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="diagnosticoForm.invalid">
+          Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+<!-- MODAL TURNO -->
+<div class="modal-backdrop" *ngIf="showTurno">
+  <div class="modal">
+
+    <h3>Agregar Turno</h3>
+
+    <form [formGroup]="turnoForm" (ngSubmit)="guardarTurno()">
+
+      <div class="form-group">
+        <label>Código</label>
+        <input
+          type="text"
+          placeholder="Ej: T-001"
+          formControlName="codigo"
+        />
+        <small class="error"
+          *ngIf="turnoForm.get('codigo')?.invalid && turnoForm.get('codigo')?.touched">
+          El código es obligatorio
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Hora inicio</label>
+        <input
+          type="time"
+          formControlName="hora_inicio"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Hora fin</label>
+        <input
+          type="time"
+          formControlName="hora_fin"
+        />
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeTurnoModal()">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="turnoForm.invalid">
+          Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

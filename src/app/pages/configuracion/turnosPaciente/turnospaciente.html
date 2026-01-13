@@ -1,0 +1,37 @@
+<section class="doctor-container" style="margin-left: 291px;">
+
+
+  <div *ngIf="doctor" class="doctor-card">
+    <h2>👨‍⚕️ {{ doctor.nombre }}</h2>
+  </div>
+
+  <table class="tabla-pacientes" *ngIf="pacientes.length > 0">
+
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Paciente</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+        *ngFor="let p of pacientes; index as i"
+        (click)="irHistoria(p.hc)"
+      >
+        <td>{{ i + 1 }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.fecha }}</td>
+        <td>{{ p.hora }}</td>
+      </tr>
+    </tbody>
+
+  </table>
+
+  <p *ngIf="pacientes.length === 0">
+    No hay pacientes con cita.
+  </p>
+
+</section>

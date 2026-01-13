@@ -1,0 +1,142 @@
+.calendar-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.calendar {
+  border: 1px solid #ccc;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f0f0f0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.calendar-days span {
+  padding: 8px;
+  border-right: 1px solid #ccc;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+  min-height: 120px;
+  border: 1px solid #ddd;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.day-number {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.turno {
+  margin-bottom: 4px;
+  padding: 4px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+}
+
+.persona {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+/* colores de turnos */
+.M1 { background: #4caf50; }
+.MT1 { background: #2196f3; }
+.GC1 { background: #9c27b0; }
+.APS1 { background: #ff9800; }
+.T1 { background: #607d8b; }
+
+
+.carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.slide {
+  min-width: 220px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #f3f3f3;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.slide:hover {
+  transform: scale(1.05);
+}
+
+.slide.active {
+  border: 2px solid #4caf50;
+}
+
+.slide.new {
+  background: #e8f5e9;
+  text-align: center;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.btn-delete {
+  margin-top: 8px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+}
+
+
+.modal {
+  background: #fff;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -1,0 +1,32 @@
+.inicio {
+  padding: 1.5rem;
+}
+
+header {
+  margin-bottom: 1rem;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.tabla th {
+  background: #f4f6f8;
+  font-weight: 600;
+}
+
+.tabla tbody tr:hover {
+  background: #f0f7ff;
+  cursor: pointer;
+}

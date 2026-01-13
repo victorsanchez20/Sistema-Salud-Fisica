@@ -1,0 +1,250 @@
+/* CONTENEDOR PRINCIPAL */
+.historyclinical {
+  margin-left: 250px;
+  padding: 32px;
+  background: linear-gradient(180deg, #f8fafc, #eef2f7);
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* TARJETA */
+.hc-card {
+  max-width: 1200px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+}
+
+/* HEADER */
+.hc-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed #e5e7eb;
+  margin-bottom: 32px;
+}
+
+.hc-avatar img {
+  width: 96px;
+  height: 96px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #e0f2fe;
+}
+
+.hc-title h1 {
+  font-size: 26px;
+  margin: 0;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.hc-title p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #2563eb;
+}
+
+/* SECCIONES */
+.hc-section {
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.hc-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hc-section h3::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+}
+
+/* GRID INFO */
+.hc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.hc-grid div {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  padding: 14px 16px;
+  border-radius: 10px;
+}
+
+.hc-grid span {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.hc-grid p {
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* TABLA MÉDICA */
+.hc-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.hc-table thead {
+  background: #f1f5f9;
+}
+
+.hc-table th {
+  padding: 14px;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #475569;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.hc-table td {
+  padding: 14px;
+  font-size: 14px;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.hc-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.hc-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* BOTON EDITAR */
+.btn-edit {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  border: none;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.btn-delete {
+  position: absolute;
+  right: 70px;
+  top: 0;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff0000, #df5151);
+  border: none;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.btn-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.2);
+}
+
+.btn-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.2);
+}
+
+/* INPUTS SOLO CUANDO SE EDITA */
+.hc-grid input {
+  width: 85%;
+  margin-top: 6px;
+  padding: 8px 12px;
+
+  border-radius: 8px;
+  border: 1px solid #c7d2fe;
+  background: #ffffff;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.hc-grid input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
+
+.btn-save {
+  margin-top: 20px;
+  margin-left: auto;
+  display: block;
+
+  padding: 10px 22px;
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+  border: none;
+  color: white;
+  border-radius: 22px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.btn-save:hover {
+  box-shadow: 0 6px 14px rgba(34,197,94,.35);
+  transform: translateY(-1px);
+}
+
+/* INPUT HC EN HEADER */
+.hc-input {
+  margin-left: 8px;
+  padding: 4px 10px;
+
+  border-radius: 8px;
+  border: 1px solid #c7d2fe;
+  background: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563eb;
+
+  width: 120px;
+  transition: 0.2s;
+}
+
+.hc-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,.2);
+}
+

@@ -4,7 +4,7 @@
   <div class="patients-header">
     <h2>Gestión de Pacientes</h2>
 
-    <button class="btn-primary">
+    <button class="btn-primary" (click)="irAgregarPaciente()">
       <i class="fa-solid fa-user-plus"></i>
       Nuevo Paciente
     </button>
@@ -16,6 +16,7 @@
     <input
       type="text"
       placeholder="Buscar por Nombre, DNI o Historia Clínica"
+      (input)="buscarPaciente($event.target.value)"
     />
   </div>
 
@@ -34,30 +35,59 @@
           <th>Edad</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>00102501</td>
-          <td>Pérez</td>
-          <td>Gómez</td>
-          <td>Juan Carlos</td>
-          <td>74589632</td>
-          <td>12/05/1998</td>
-          <td>26</td>
+
+        <!-- LISTA PAGINADA -->
+        <tr
+          *ngFor="let p of pacientesPaginados; let i = index"
+          (click)="irHistoriaClinica(p.hc)"
+          style="cursor: pointer;"
+        >
+          <td>{{ (paginaActual - 1) * pageSize + i + 1 }}</td>
+          <td>{{ p.hc }}</td>
+          <td>{{ p.apaterno }}</td>
+          <td>{{ p.amaterno }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.dni }}</td>
+          <td>{{ p.nacimiento | date:'dd/MM/yyyy' }}</td>
+          <td>{{ calcularEdad(p.nacimiento) }}</td>
         </tr>
+
+        <!-- CUANDO NO HAY DATOS -->
+        <tr *ngIf="pacientes.length === 0">
+          <td colspan="8" style="text-align: center; padding: 20px;">
+            No hay pacientes registrados
+          </td>
+        </tr>
+
       </tbody>
     </table>
   </div>
 
-  <!-- PAGINATION -->
-  <div class="pagination">
-    <button class="page-btn">«</button>
-    <button class="page-btn active">1</button>
-    <button class="page-btn">2</button>
-    <button class="page-btn">3</button>
-    <button class="page-btn">4</button>
-    <button class="page-btn">5</button>
-    <button class="page-btn">»</button>
-  </div>
+  <!-- PAGINACIÓN REAL -->
+  <div class="pagination" *ngIf="totalPaginas > 1">
 
+    <button
+      class="page-btn"
+      (click)="cambiarPagina(paginaActual - 1)"
+      [disabled]="paginaActual === 1">
+      «
+    </button>
+
+    <button
+      class="page-btn"
+      *ngFor="let p of paginas()"
+      (click)="cambiarPagina(p)"
+      [class.active]="p === paginaActual">
+      {{ p }}
+    </button>
+
+    <button
+      class="page-btn"
+      (click)="cambiarPagina(paginaActual + 1)"
+      [disabled]="paginaActual === totalPaginas">
+      »
+    </button>
+  </div>
 </section>

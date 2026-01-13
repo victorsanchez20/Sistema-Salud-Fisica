@@ -1,0 +1,215 @@
+<section class="appointment">
+
+  <!-- TÍTULO -->
+  <header class="appointment-header">
+    <h1>Citar Paciente</h1>
+    <p>Gestión de citas de fisioterapia</p>
+  </header>
+
+  <!-- FORMULARIO -->
+  <form class="appointment-card">
+
+    <!-- FISIOTERAPEUTA -->
+    <div class="form-group">
+      <label>Fisioterapeuta</label>
+
+      <select [(ngModel)]="fisioterapeutaSeleccionado" name="fisioterapeuta">
+        <option [ngValue]="null">Seleccione</option>
+
+        <option *ngFor="let d of doctor" [ngValue]="d.id">
+          {{ d.nombre }}
+        </option>
+      </select>
+
+      <button type="button" (click)="cargarHorario()">Cargar</button>
+    </div>
+
+    <!-- HORARIO -->
+  <div class="form-group">
+    <label>Horario de atención</label>
+
+    <div class="calendar-nav">
+      <button type="button" (click)="mesAnterior()">◀</button>
+      <span>
+        {{ anioActual }} -
+        {{ mesActual + 1 | number:'2.0' }}
+      </span>
+      <button type="button" (click)="mesSiguiente()">▶</button>
+    </div>
+
+    <div class="calendar-wrapper">
+
+      <!-- encabezado días -->
+      <div class="calendar-header-row">
+        <div>Lun</div>
+        <div>Mar</div>
+        <div>Mié</div>
+        <div>Jue</div>
+        <div>Vie</div>
+        <div>Sáb</div>
+        <div>Dom</div>
+      </div>
+
+      <!-- cuerpo calendario -->
+      <div class="calendar-body">
+        <div
+          class="calendar-cell"
+          [class.vacio]="day.vacio"
+          [class.pasado]="day.pasado"
+          *ngFor="let day of calendarioFiltrado"
+        >
+
+
+          <div class="day-number" *ngIf="!day.vacio">
+            {{ day.numero }}
+          </div>
+
+         <div
+            class="turno"
+            *ngFor="let t of day.turnos"
+            (click)="!day.pasado && seleccionarTurno(day.numero!, t)"
+          >
+            {{ t.turno }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <hr>
+
+    <!-- DIAGNÓSTICO -->
+    <div class="form-group">
+      <label for="diagnostico">Tipo de diagnóstico</label>
+
+      <select [(ngModel)]="diagnosticoSeleccionado" name="diagnostico">
+        <option [ngValue]="null">Seleccione diagnóstico</option>
+
+        <option *ngFor="let d of diagnostico" [ngValue]="d.id">
+          {{ d.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <!-- BUSCAR PACIENTE -->
+    <div class="form-group">
+      <label>Buscar paciente</label>
+      <div class="search-box">
+        <input
+          type="text"
+          name="buscarPaciente"
+          placeholder="Nombre, DNI o HC"
+          [(ngModel)]="textoPaciente"
+          (input)="buscarPaciente()"
+        />
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <table class="patient-table">
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>DNI</th>
+          <th>Historia Clínica</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let p of pacientes"
+          (click)="pacienteSeleccionado = p"
+          [class.selected]="pacienteSeleccionado === p"
+        >
+          <td>{{ p.apaterno }} {{ p.amaterno }}, {{ p.nombre }}</td>
+          <td>{{ p.dni }}</td>
+          <td>{{ p.hc }}</td>
+        </tr>
+
+        <tr *ngIf="pacientes.length === 0">
+          <td colspan="3">No se encontraron pacientes</td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="pacienteSeleccionado">
+      <b>Paciente seleccionado:</b>
+      {{ pacienteSeleccionado.apaterno }}
+      {{ pacienteSeleccionado.amaterno }},
+      {{ pacienteSeleccionado.nombre }}
+    </p>
+
+
+    <!-- SESIONES -->
+    <div class="session-box">
+      <h3>Sesiones Programadas</h3>
+
+      <table *ngIf="sesionesProgramadas.length > 0">
+        <tr *ngFor="let s of sesionesProgramadas; let i = index">
+          <td>Sesión {{ i + 1 }} :</td>
+          <td>  {{ s.fecha }} - {{ s.hora }}</td>
+        </tr>
+      </table>
+
+      <p *ngIf="sesionesProgramadas.length === 0">
+        No hay sesiones programadas
+      </p>
+    </div>
+
+
+    <!-- ACCIÓN -->
+    <button type="button" (click)="registrarCita()">Registrar Cita</button>
+
+  </form>
+</section>
+
+<!-- MODAL DE LAS CITAS -->
+<div class="modal-overlay" *ngIf="turnoSeleccionado">
+
+  <div class="modal modal-turno">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h2>Detalle del Turno</h2>
+      <button class="close-x" (click)="turnoSeleccionado = null">✕</button>
+    </div>
+
+    <!-- DATOS -->
+    <div class="datos">
+      <div><span>Terapista</span><b>{{ turnoSeleccionado.terapista }}</b></div>
+      <div><span>Turno</span><b>{{ turnoSeleccionado.turno }}</b></div>
+      <div><span>Sede</span><b>{{ turnoSeleccionado.sede }}</b></div>
+      <div><span>Fecha</span><b>{{ turnoSeleccionado.fecha }}</b></div>
+    </div>
+
+    <h3>Horarios disponibles</h3>
+
+    <table class="horas-table">
+      <tr>
+        <th>Hora</th>
+        <th>Elegir</th>
+      </tr>
+
+      <tr *ngFor="let h of turnoSeleccionado.horas">
+        <td>{{ h }}</td>
+        <td class="radio-cell">
+          <input
+            type="radio"
+            [name]="'hora_' + turnoSeleccionado.fecha"
+            [value]="h"
+            [(ngModel)]="horaSeleccionada"
+          />
+        </td>
+      </tr>
+    </table>
+
+    <div class="footer">
+      <button
+        class="btn-primary"
+        (click)="confirmarHora()"
+        [disabled]="!horaSeleccionada"
+      >
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

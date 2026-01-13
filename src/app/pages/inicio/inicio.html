@@ -1,0 +1,52 @@
+<section class="inicio" style="margin-left: 290px;">
+
+  <header>
+    <h2>📅 Próximas sesiones</h2>
+
+    <p *ngIf="fechaMostrada">
+      Día más cercano:
+      <strong>{{ fechaMostrada | date:'fullDate' }}</strong>
+    </p>
+  </header>
+
+  <div *ngIf="cargando">
+    Cargando información...
+  </div>
+
+  <table *ngIf="!cargando && sesiones.length" class="tabla">
+    <thead>
+      <tr>
+        <th>Hora</th>
+        <th>Doctor</th>
+        <th>Historia Clínica</th>
+        <th>DNI</th>
+        <th>Paciente</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let s of sesiones">
+        <td>{{ s.fecha | date:'HH:mm' }}</td>
+
+        <!-- DOCTOR EN SU TD -->
+        <td>
+          {{ s.id_cita?.id_doctor?.nombre }}
+        </td>
+
+        <td>{{ s.id_cita?.id_paciente?.hc }}</td>
+        <td>{{ s.id_cita?.id_paciente?.dni }}</td>
+
+        <td>
+          {{ s.id_cita?.id_paciente?.nombre }}
+          {{ s.id_cita?.id_paciente?.apaterno }}
+          {{ s.id_cita?.id_paciente?.amaterno }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!cargando && !sesiones.length">
+    No hay sesiones próximas.
+  </p>
+
+</section>
