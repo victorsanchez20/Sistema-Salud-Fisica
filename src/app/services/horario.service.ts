@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HorarioService {
 
-  private api = 'http://localhost:8080/horarios';
+  private api = `${environment.api}/horarios`;
 
   constructor(private http: HttpClient) {}
 
@@ -23,12 +24,12 @@ export class HorarioService {
     doctorId: number;
     horas: string[];
   }) {
-    return this.http.post('http://localhost:8080/horarios/guardar', payload)
+    return this.http.post(`${environment.api}/horarios/guardar`, payload)
   }
 
   getHorasDoctor(doctorId: number) {
   return this.http.get<string[]>(
-    `http://localhost:8080/horarios/doctor/${doctorId}`
+    `${environment.api}/horarios/doctor/${doctorId}`
   );
 }
 

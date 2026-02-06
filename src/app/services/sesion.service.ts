@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class SesionService {
 
   getHorasDisponibles(doctorId: number, fecha: string) {
   return this.http.get<string[]>(
-    `http://localhost:8080/horarios/horas-disponibles`,
+    `${environment.api}/horarios/horas-disponibles`,
     {
       params: {
         doctorId,

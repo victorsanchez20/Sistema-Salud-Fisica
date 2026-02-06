@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { DisponibilidadDTO } from '../models/disponibilidad.model';
 import { CalendarioGuardado } from '../models/calendarioGuardado.model';
 import { DisponibilidadView } from '../models/disponivilidadView.model';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root',
