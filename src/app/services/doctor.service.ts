@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Doctor } from '../models/doctor.model';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 export class DoctorService {
   
   //private API_URL  = 'http://localhost:8080/api/terapia/doctor';
-  private API_URL  = 'https://sistema-salud-backend.onrender.com/api/terapia/doctor';
+  private API_URL  = `${environment.api}/api/terapia/doctor`;
 
   constructor(private http: HttpClient) {}
 

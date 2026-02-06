@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SesionService {
   //private api = 'http://localhost:8080/api/terapia/sesion';
-  private api = 'https://sistema-salud-backend.onrender.com/api/terapia/sesion';
+  private api = `${environment.api}/api/terapia/sesion`;
 
 
   constructor(private http: HttpClient) {}
@@ -25,5 +26,18 @@ export class SesionService {
   getSesionesProximas(): Observable<any[]> {
     return this.http.get<any[]>(`${this.api}/proximas`);
   }
+
+  getHorasDisponibles(doctorId: number, fecha: string) {
+  return this.http.get<string[]>(
+    `http://localhost:8080/horarios/horas-disponibles`,
+    {
+      params: {
+        doctorId,
+        fecha
+      }
+    }
+  );
+}
+
 
 }

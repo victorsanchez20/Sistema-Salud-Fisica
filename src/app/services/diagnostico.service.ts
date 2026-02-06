@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Diagnostico } from '../models/diagnostico.model';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DiagnosticoService {
   //private APIURL = 'http://localhost:8080/api/terapia/diagnostico';
-  private APIURL = 'https://sistema-salud-backend.onrender.com/api/terapia/diagnostico';
+  private APIURL = `${environment.api}/api/terapia/diagnostico`;
 
   constructor(private http: HttpClient) {}
 

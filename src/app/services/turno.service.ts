@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Turno } from '../models/turno.model';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TurnoService {
   //private API_URL  = 'http://localhost:8080/api/terapia/turno';
-  private API_URL  = 'https://sistema-salud-backend.onrender.com/api/terapia/turno';
+  private API_URL  = `${environment.api}/api/terapia/turno`;
 
   constructor(private http: HttpClient) {}
 

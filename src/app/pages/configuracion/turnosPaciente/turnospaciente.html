@@ -1,10 +1,52 @@
 <section class="doctor-container" style="margin-left: 291px;">
 
-
+  <!-- INFO DOCTOR -->
   <div *ngIf="doctor" class="doctor-card">
     <h2>👨‍⚕️ {{ doctor.nombre }}</h2>
   </div>
 
+  <!-- CONFIGURAR HORARIO -->
+  <div *ngIf="doctor" class="horario-box">
+
+    <hr />
+    <h3>Configurar horario</h3>
+
+    <!-- AGREGAR HORA -->
+    <div class="agregar-hora">
+      <input
+        type="time"
+        [(ngModel)]="nuevaHora"
+      />
+      <button (click)="agregarHora()">
+        Agregar
+      </button>
+    </div>
+
+    <!-- HORAS SELECCIONADAS -->
+    <div class="horas-seleccionadas" *ngIf="horasSeleccionadas.length > 0">
+      <div
+        class="hora-item"
+        *ngFor="let h of horasSeleccionadas">
+        <span>{{ h }}</span>
+        <button class="eliminar" (click)="eliminarHora(h)">✖</button>
+      </div>
+    </div>
+
+    <p *ngIf="horasSeleccionadas.length === 0">
+      No hay horas configuradas
+    </p>
+
+    <!-- GUARDAR -->
+    <button
+      class="guardar"
+      (click)="guardarHorario()"
+      [disabled]="!horasSeleccionadas.length">
+      Guardar horario
+    </button>
+
+  </div>
+
+  <!-- PACIENTES -->
   <table class="tabla-pacientes" *ngIf="pacientes.length > 0">
 
     <thead>
@@ -19,8 +61,7 @@
     <tbody>
       <tr
         *ngFor="let p of pacientes; index as i"
-        (click)="irHistoria(p.hc)"
-      >
+        (click)="irHistoria(p.hc)">
         <td>{{ i + 1 }}</td>
         <td>{{ p.nombre }}</td>
         <td>{{ p.fecha }}</td>
@@ -35,3 +76,4 @@
   </p>
 
 </section>
+

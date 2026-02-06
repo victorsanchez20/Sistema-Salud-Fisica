@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Paciente } from '../models/paciente.model';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,7 @@ import { Paciente } from '../models/paciente.model';
 export class PacienteService {
   
   //private APIURL = 'http://localhost:8080/api/terapia/paciente';
-  private APIURL = 'https://sistema-salud-backend.onrender.com/api/terapia/paciente';
+  private APIURL = `${environment.api}/api/terapia/paciente`;
   pacientes: Paciente[] = [];
   textoPaciente = '';
 

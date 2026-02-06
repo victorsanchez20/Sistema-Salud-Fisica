@@ -18,15 +18,12 @@ interface TurnoDia {
   turno: string;
 }
 
-
 interface DiaCalendario {
   numero: number | null;
   turnos: TurnoDia[];
   vacio: boolean;
   pasado?: boolean; // 🔴 AQUI NUEVO
 }
-
-
 
 interface Sesion {
   id: number;
@@ -43,7 +40,6 @@ interface CitaConSesiones {
   id_diagnostico: { nombre: string };
   sesiones: Sesion[];
 }
-
 
 @Component({
   selector: 'app-citar',
@@ -133,56 +129,19 @@ export class Citar {
     this.horaSeleccionada = null;
   }
 
-  // GENERA HORAS DE LAS CITAS DEL CALENDARIO
-  generarHoras(turno: string): string[] {
-    if (turno === 'M1') {
-      return ['07:00','08:00','09:00','10:00','11:00','12:00','13:00'];
-    }
-
-    if (turno === 'T1') {
-      return ['13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
-    }
-
-    if (turno === 'MT1') {
-      return [
-        '07:00','08:00','09:00','10:00','11:00','12:00','13:00',
-        '14:00','15:00','16:00','17:00','18:00','19:00'
-      ];
-    }
-
-    return [];
-  }
-/*
-  seleccionarTurno(dia: number, turno: TurnoDia) {
-
-    if (!dia) return;
-    //const fecha = `2026-01-${String(dia).padStart(2,'0')}`;
-    const fecha = `${this.anioActual}-${String(this.mesActual + 1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-
-
-    this.turnoSeleccionado = {
-      terapista: turno.nombre,
-      turno: turno.turno,
-      fecha: fecha,
-      sede: 'CMI Ancón',
-      horas: this.generarHoras(turno.turno)
-    };
-  }*/
-
   seleccionarTurno(dia: number, turno: TurnoDia) {
 
     if (!dia) return;
 
     const fecha = `${this.anioActual}-${String(this.mesActual + 1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-
-    const horasBase = this.generarHoras(turno.turno);
 
     this.sesionService
-      .getHorasOcupadas(fecha, turno.doctorId)
-      .subscribe(horasOcupadas => {
+      .getHorasDisponibles(turno.doctorId, fecha)
+      .subscribe(horasDisponibles => {
 
-        const ocupadas = horasOcupadas.map(h =>
-          h.substring(11, 16) // HH:mm
+        const horasFiltradas = this.filtrarHorasPorTurno(
+          horasDisponibles,
+          turno.turno   // 👈 M / T / MT
         );
 
         this.turnoSeleccionado = {
@@ -190,10 +149,13 @@ export class Citar {
           turno: turno.turno,
           fecha: fecha,
           sede: 'CMI Ancón',
-          horas: horasBase.filter(h => !ocupadas.includes(h))
+          horas: horasFiltradas   // ✅ YA FILTRADAS
         };
+
+        this.cdr.detectChanges();
       });
   }
+
 
   registrarCita() {
     if (!this.pacienteSeleccionado) {
@@ -323,36 +285,6 @@ export class Citar {
     });
   }
 
-  /*
-  generarCalendario() {
-    this.calendarioCompleto = [];
-
-    const anio = this.anioActual;
-    const mes = this.mesActual; // 👈 dinámico
-
-    const primerDia = new Date(anio, mes, 1);
-    let diaSemana = primerDia.getDay();
-    diaSemana = diaSemana === 0 ? 6 : diaSemana - 1;
-
-    for (let i = 0; i < diaSemana; i++) {
-      this.calendarioCompleto.push({
-        numero: null,
-        turnos: [],
-        vacio: true
-      });
-    }
-
-    const diasMes = new Date(anio, mes + 1, 0).getDate();
-
-    for (let d = 1; d <= diasMes; d++) {
-      this.calendarioCompleto.push({
-        numero: d,
-        turnos: [],
-        vacio: false
-      });
-    }
-  }*/
-
   generarCalendario() {
     this.calendarioCompleto = [];
 
@@ -390,7 +322,6 @@ export class Citar {
       });
     }
   }
-
 
   cargarHorario() {
     if (!this.fisioterapeutaSeleccionado) {
@@ -475,4 +406,25 @@ export class Citar {
     this.generarCalendario();
     this.cargarDisponibilidad();
   }
+
+  filtrarHorasPorTurno(horas: string[], turno: string): string[] {
+    return horas.filter(hora => {
+      const h = parseInt(hora.split(':')[0], 10);
+
+      if (turno === 'M1') {
+        return h >= 7 && h < 13;
+      }
+
+      if (turno === 'T1') {
+        return h >= 13 && h < 19;
+      }
+
+      if (turno === 'MT1') {
+        return h >= 7 && h < 19;
+      }
+
+      return false;
+    });
+  }
+
 }

@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { DisponibilidadDTO } from '../models/disponibilidad.model';
 import { CalendarioGuardado } from '../models/calendarioGuardado.model';
 import { DisponibilidadView } from '../models/disponivilidadView.model';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DisponibilidadDoctorService {
   //private APIURL = 'http://localhost:8080/api/terapia/disponibilidad';
-  private APIURL = 'https://sistema-salud-backend.onrender.com/api/terapia/disponibilidad';
+  private APIURL = `${environment.api}/api/terapia/disponibilidad`;
 
 
   constructor(private http: HttpClient) {}
