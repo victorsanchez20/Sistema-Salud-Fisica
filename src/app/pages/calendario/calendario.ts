@@ -160,6 +160,11 @@ export class Calendario implements OnInit {
     this.mostrarModal = false;
   }
 
+  onMesAnioChange() {
+    this.generarCalendario();
+    this.cargarDisponibilidadDesdeBD();
+  }
+
   nuevoCalendario() {
     const hoy = new Date();
     this.mes = hoy.getMonth() + 1;

@@ -10,6 +10,7 @@ import { Calendario } from './pages/calendario/calendario';
 import { Configuracion } from './pages/configuracion/configuracion';
 import { Turnospaciente } from './pages/configuracion/turnosPaciente/turnospaciente';
 import { Inicio } from './pages/inicio/inicio';
+import { InsertarHc } from './pages/insertar-hc/insertar-hc';
 
 export const routes: Routes = [
     {
@@ -22,6 +23,7 @@ export const routes: Routes = [
             { path: 'historiaclinica/:hc', component: Historiaclinica},
             { path: 'citar', component: Citar},
             { path: 'calendario', component: Calendario},
+            { path: 'insertar-hc', component: InsertarHc},
             { path: 'configuracion', component: Configuracion},
             { path: 'datos/:nombre', component: Turnospaciente}
         ]

@@ -32,6 +32,10 @@ export class PacienteService {
     return this.http.get<Paciente[]>(`${this.APIURL}/buscar`, { params: { q: nombre } });
   }
 
+  buscarPorDNI(dni: string) {
+    return this.http.get<Paciente[]>(`${this.APIURL}/${dni}`);
+  }
+
   actualizar(id: number, paciente: Paciente) {
     return this.http.put<Paciente>(`${this.APIURL}/${id}`, paciente);
   }

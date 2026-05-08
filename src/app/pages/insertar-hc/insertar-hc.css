@@ -1,0 +1,252 @@
+.ihc-page { 
+    padding: 1.5rem; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+    max-width: 2000px;
+    margin-left: 300px;
+}
+
+.ihc-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.ihc-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: .75rem;
+}
+
+label { 
+    font-size: 11px; 
+    color: #6b7280; display: 
+    block; 
+    margin-bottom: 3px;
+}
+
+
+input, select, textarea {
+  width: 100%;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #111827;
+  font-family: inherit;
+}
+
+textarea { 
+  resize: vertical; 
+  min-height: 80px; 
+}
+
+.ihc-field { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 3px; 
+}
+
+.ihc-row-5 { 
+  display: grid; 
+  grid-template-columns: 160px 1fr 1fr 1fr 1fr; 
+  gap: 18px; 
+  margin-bottom: 18px; 
+  align-items: end; 
+}
+
+.ihc-row-4 { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr 1fr auto; 
+  gap: 18px; 
+  align-items: end; 
+}
+
+/* Destacar el input DNI */
+.ihc-row-5 .ihc-field:first-child input {
+  border: 2px solid #185FA5;
+  background: #f0f7ff;
+  box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.1);
+  font-weight: 500;
+}
+
+.ihc-acciones { 
+  display: flex; 
+  gap: 8px; 
+  align-items: flex-end; 
+}
+
+.btn { 
+  padding: 7px 16px; 
+  border-radius: 6px; 
+  font-size: 12px; 
+  font-weight: 500; 
+  cursor: pointer; 
+  border: 1px solid #d1d5db; 
+  background: #f3f4f6; 
+  color: #374151; 
+}
+
+.btn-primary { 
+  background: #185FA5; 
+  border-color: #185FA5; 
+  color: #fff; 
+}
+
+.btn-ghost { 
+  background: transparent; 
+  color: #6b7280; 
+}
+
+.ihc-body { 
+  display: grid; 
+  grid-template-columns: 0.7fr 1.3fr; 
+  gap: 1rem; 
+  align-items: start; 
+}
+
+.ihc-col-left { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem; 
+}
+
+.ihc-col-right { 
+  display: flex; 
+  flex-direction: column; 
+  gap: .75rem; 
+}
+
+.ihc-sesiones 
+{ 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  max-height: 200px; 
+  overflow-y: auto; 
+}
+
+.ihc-sesion-row {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  font-size: 13px;
+  background: #f9fafb; 
+  border: 1px solid #e5e7eb; 
+  cursor: pointer;
+}
+
+.ihc-sesion-row:hover { 
+  border-color: #9ca3af; 
+}
+
+.ihc-doc-row-active {
+  background: #eff6ff; 
+  border-color: #185FA5; 
+  color: #185FA5;
+}
+
+.btn-delete {
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.tag { 
+  font-size: 10px; 
+  padding: 2px 8px;
+  border-radius: 4px; 
+  border: 1px solid #d1d5db; 
+  color: #6b7280; 
+}
+
+.tag-activa { 
+  background: #ecfdf5; 
+  border-color: #6ee7b7; 
+  color: #065f46; 
+}
+
+.ihc-doc-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+.ihc-doc-header select { 
+  width: auto; 
+  font-size: 12px; 
+}
+
+.ihc-doc-preview {
+  height: 700px; 
+  background: #f9fafb; 
+  border: 1px solid #e5e7eb;
+  border-radius: 8px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 13px; 
+  color: #9ca3af;
+}
+
+.ihc-paginador { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 12px; 
+  font-size: 13px; 
+  color: #6b7280; 
+}
+
+.ihc-btn-full { 
+  width: 100%; 
+}
+
+.ihc-thumbnails { 
+  display: grid; 
+  grid-template-columns: repeat(3,1fr); 
+  gap: 8px; 
+}
+
+.ihc-thumb {
+  height: 60px; 
+  background: #f3f4f6; 
+  border: 1px solid #d1d5db;
+  border-radius: 6px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 11px; 
+  color: #9ca3af; 
+  cursor: pointer;
+}
+
+.ihc-thumb-active { 
+  background: #eff6ff; 
+  border-color: #185FA5; 
+  color: #185FA5; 
+}
