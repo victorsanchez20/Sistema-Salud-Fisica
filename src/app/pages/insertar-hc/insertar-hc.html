@@ -1,77 +1,64 @@
 <div class="ihc-page">
 
-  <!-- Datos del paciente -->
   <div class="ihc-card">
     <p class="ihc-section-title">Datos del paciente</p>
     <div class="ihc-row-5">
       <div class="ihc-field">
         <label>DNI</label>
-        <input  (keyup.enter)="buscarPacientePorDNI()" type="text" [(ngModel)]="paciente.dni" placeholder="Ej. 12345678">
+        <input (keyup.enter)="buscarPacientePorDNI()" type="text" [(ngModel)]="paciente.dni" placeholder="Ingrese DNI del paciente">
       </div>
       <div class="ihc-field">
         <label>Apellido Paterno</label>
-        <input type="text" [(ngModel)]="paciente.apaterno" disabled="true">
+        <input type="text" [(ngModel)]="paciente.apaterno" disabled="true" placeholder="Apellido paterno">
       </div>
       <div class="ihc-field">
         <label>Apellido Materno</label>
-        <input type="text" [(ngModel)]="paciente.amaterno" disabled="true">
+        <input type="text" [(ngModel)]="paciente.amaterno" disabled="true" placeholder="Apellido materno">
       </div>
       <div class="ihc-field">
         <label>Nombres</label>
-        <input type="text" [(ngModel)]="paciente.nombre" disabled="true">
+        <input type="text" [(ngModel)]="paciente.nombre" disabled="true" placeholder="Nombres">
       </div>
       <div class="ihc-field">
-        <label>Fecha nac.</label>
-        <input type="text" [(ngModel)]="paciente.nacimiento" disabled="true">
+        <label>Fecha de nacimiento</label>
+        <input type="text" [(ngModel)]="paciente.nacimiento" disabled="true" placeholder="Fecha de nacimiento">
       </div>
-      <!--
-      <div class="ihc-field">
-        <label>Sexo</label>
-        <select [(ngModel)]="paciente.sexo">
-          <option value="">—</option>
-          <option>Masculino</option>
-          <option>Femenino</option>
-        </select>
-      </div>
-    -->
     </div>
     <div class="ihc-row-4">
       <div class="ihc-field">
         <label>Teléfono</label>
-        <input type="text" [(ngModel)]="paciente.telefono" disabled="true">
+        <input type="text" [(ngModel)]="paciente.telefono" disabled="true" placeholder="Teléfono">
       </div>
       <div class="ihc-acciones">
         <button class="btn btn-ghost" (click)="limpiar()">Limpiar</button>
-        <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+        <button class="btn btn-primary" (click)="guardar()">Guardar HC</button>
       </div>
     </div>
   </div>
 
-  <!-- Cuerpo: izquierda + derecha -->
   <div class="ihc-body">
 
-    <!-- Columna izquierda -->
     <div class="ihc-col-left">
 
       <div class="ihc-card">
-        <p class="ihc-section-title">Responsable del ingreso de la HC</p>
+        <p class="ihc-section-title">Responsable del ingreso</p>
         <div class="ihc-field">
           <label>Nombre del profesional</label>
-          <input type="text" [(ngModel)]="responsable" placeholder="Buscar o ingresar nombre...">
+          <input type="text" [(ngModel)]="responsable" placeholder="Buscar o ingresar nombre del profesional...">
         </div>
       </div>
 
       <div class="ihc-card">
-        <p class="ihc-section-title">Especialidad de la Atencion</p>
+        <p class="ihc-section-title">Especialidad de atención</p>
         <div class="ihc-field">
-          <label>Nombre de la Especialidad</label>
-          <input type="text" [(ngModel)]="especialidad" placeholder="Ingresar especialidad...">
+          <label>Nombre de la especialidad</label>
+          <input type="text" [(ngModel)]="especialidad" placeholder="Ingrese la especialidad...">
         </div>
       </div>
 
       <div class="ihc-card">
-        <p class="ihc-section-title">Descripción / anamnesis</p>
-        <textarea [(ngModel)]="descripcion" placeholder="Ingrese la descripción clínica..."></textarea>
+        <p class="ihc-section-title">Descripción / Anamnesis</p>
+        <textarea [(ngModel)]="descripcion" placeholder="Ingrese la descripción clínica del paciente, síntomas, antecedentes..."></textarea>
       </div>
 
       <div class="ihc-card">
@@ -81,58 +68,54 @@
             <span>{{ doc.label }}</span>
             <button class="btn-delete" (click)="deleteArchivo(doc.id); $event.stopPropagation()" title="Eliminar documento">✕</button>
           </div>
-          <div *ngIf="documentos.length === 0" style="padding: 8px 12px; color: #9ca3af; font-size: 13px;">
+          <div *ngIf="documentos.length === 0" style="padding: 16px 12px; color: #94a3b8; font-size: 14px; text-align: center;">
             No hay documentos cargados
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Columna derecha: visor documentos -->
     <div class="ihc-card ihc-col-right">
       <div class="ihc-doc-header">
-        <p class="ihc-section-title" style="margin:0">Adjuntar documento</p>
+        <p class="ihc-section-title">Adjuntar documento</p>
         <select [(ngModel)]="docTipo">
-          <option>Informe médico</option>
-          <option>Radiografía</option>
-          <option>Receta</option>
-          <option>Otro</option>
+          <option value="Informe médico">Informe médico</option>
+          <option value="Radiografía">Radiografía</option>
+          <option value="Receta">Receta</option>
+          <option value="Otro">Otro</option>
         </select>
       </div>
 
       <div class="ihc-doc-preview">
-        <!-- Imagen -->
-         <img *ngIf="obtenerDocumentoActual()?.previewUrl && obtenerDocumentoActual()?.tipoArchivo?.startsWith('image')"
-              [src]="obtenerDocumentoActual()?.previewUrl"
-              style="max-width:100%; max-height:700px;"/>
-              
+        <img *ngIf="obtenerDocumentoActual()?.previewUrl && obtenerDocumentoActual()?.tipoArchivo?.startsWith('image')"
+             [src]="obtenerDocumentoActual()?.previewUrl"
+             alt="Vista previa">
 
-        <!-- PDF -->
-         <iframe *ngIf="obtenerDocumentoActual()?.previewUrl && obtenerDocumentoActual()?.tipoArchivo === 'application/pdf'"
-              [src]="obtenerDocumentoActual()?.previewUrl"
-              width="100%"
-              height="700">
-         </iframe>
-        
-        <!-- Others files -->
-         <p *ngIf="obtenerDocumentoActual()?.previewUrl && !obtenerDocumentoActual()?.tipoArchivo?.startsWith('image') && obtenerDocumentoActual()?.tipoArchivo !== 'application/pdf'">
-            Vista previa no disponible para este tipo de archivo: {{ obtenerDocumentoActual()?.label }}
-         </p>
+        <iframe *ngIf="obtenerDocumentoActual()?.previewUrl && obtenerDocumentoActual()?.tipoArchivo === 'application/pdf'"
+             [src]="obtenerDocumentoActual()?.previewUrl"
+             width="100%"
+             height="100%">
+        </iframe>
+       
+        <p *ngIf="obtenerDocumentoActual()?.previewUrl && !obtenerDocumentoActual()?.tipoArchivo?.startsWith('image') && obtenerDocumentoActual()?.tipoArchivo !== 'application/pdf'">
+           Vista previa no disponible para: {{ obtenerDocumentoActual()?.label }}
+        </p>
 
-         <!-- Sin documento seleccionado -->
-         <p *ngIf="!obtenerDocumentoActual()" style="color: #9ca3af; text-align: center; padding: 40px 20px;">
-            Cargue un documento para verlo aquí
-         </p>
+        <p *ngIf="!obtenerDocumentoActual()" style="color: #94a3b8; text-align: center; padding: 40px 20px;">
+           Cargue un documento para visualizarlo aquí
+        </p>
       </div>
 
       <div class="ihc-paginador">
-        <button class="btn" (click)="anterior()">‹</button>
+        <button class="btn" (click)="anterior()">&#8249;</button>
         <span>{{ paginaActual }} / {{ totalPaginas }}</span>
-        <button class="btn" (click)="siguiente()">›</button>
+        <button class="btn" (click)="siguiente()">&#8250;</button>
       </div>
 
       <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
-      <button class="btn btn-primary ihc-btn-full" (click)="fileInput.click()">+ Cargar documento</button>
+      <button class="btn btn-primary ihc-btn-full" (click)="fileInput.click()">
+        + Cargar documento
+      </button>
 
       <div class="ihc-thumbnails">
         <div
