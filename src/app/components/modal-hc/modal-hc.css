@@ -1,156 +1,261 @@
-/* modal-hc.css */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(10px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
+  animation: overlayIn 0.25s ease;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-container {
-  background: var(--color-background-primary, #fff);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
+  border-radius: 28px;
+  width: min(100%, 1440px);
+  max-height: 94vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(226, 232, 240, 0.5);
+  animation: modalSlideUp 0.28s ease;
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  gap: 16px;
+  padding: 32px 42px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
 }
 
 .modal-header-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .modal-especialidad {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e293b;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
 }
 
 .modal-fecha {
-  font-size: 13px;
+  font-size: 14px;
   color: #64748b;
+  font-weight: 500;
 }
 
 .modal-close {
-  background: none;
-  border: none;
-  font-size: 18px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  font-size: 20px;
   cursor: pointer;
-  color: #64748b;
-  padding: 4px 8px;
-  border-radius: 6px;
+  color: #0f172a;
+  padding: 12px 14px;
+  border-radius: 14px;
+  transition: all 0.18s ease;
+  line-height: 1;
 }
 
-.modal-close:hover { background: #f1f5f9; }
+.modal-close:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
 
 .modal-body {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: minmax(400px, 440px) minmax(420px, 1fr);
   flex: 1;
   overflow: hidden;
 }
 
 .modal-info {
-  padding: 20px;
-  border-right: 1px solid #e2e8f0;
+  padding: 32px;
+  border-right: 1px solid rgba(226, 232, 240, 0.95);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 28px;
+  background: #ffffff;
+}
+
+.modal-field {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
 }
 
 .modal-field label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #94a3b8;
+  letter-spacing: 0.12em;
+  color: #64748b;
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 
 .modal-field p {
-  font-size: 14px;
-  color: #334155;
+  font-size: 16px;
+  color: #102a43;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.75;
 }
 
 .modal-archivos-lista {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
 .modal-archivo-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s ease;
+  background: #ffffff;
 }
 
-.modal-archivo-item:hover { background: #f8fafc; border-color: #cbd5e1; }
-.modal-archivo-item.activo { background: #eff6ff; border-color: #93c5fd; }
+.modal-archivo-item:hover {
+  background: #eef2ff;
+  border-color: #bfdbfe;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
 
-.archivo-icono { font-size: 20px; }
+.modal-archivo-item.activo {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.18);
+}
+
+.archivo-icono {
+  font-size: 24px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0f2fe;
+  color: #1e40af;
+  border-radius: 14px;
+}
 
 .archivo-nombre {
-  font-size: 13px;
-  font-weight: 500;
-  color: #1e293b;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
   margin: 0;
-  white-space: nowrap;
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  white-space: nowrap;
+  max-width: 260px;
 }
 
 .archivo-categoria {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 12px;
+  color: #475569;
+  font-weight: 500;
 }
 
 .modal-preview {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #f8fbff, #eef4ff);
   overflow: hidden;
+  padding: 24px;
+}
+
+.preview-img,
+.preview-pdf {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.95);
 }
 
 .preview-img {
-  max-width: 100%;
-  max-height: 100%;
   object-fit: contain;
 }
 
 .preview-pdf {
-  width: 100%;
-  height: 100%;
-  border: none;
+  min-height: 70vh;
 }
 
 .preview-empty {
+  width: 100%;
+  min-height: 360px;
   text-align: center;
-  color: #94a3b8;
-  font-size: 14px;
+  color: #64748b;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px dashed rgba(148, 163, 184, 0.5);
+}
+
+.preview-empty::before {
+  content: '';
+  display: block;
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  background: rgba(226, 232, 240, 0.8);
+  margin-bottom: 6px;
+}
+
+@media (max-width: 1100px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-info {
+    border-right: none;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  }
+}
+
+@media (max-width: 800px) {
+  .modal-container {
+    width: 100%;
+    border-radius: 22px;
+  }
+
+  .modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modal-close {
+    align-self: flex-end;
+  }
 }
