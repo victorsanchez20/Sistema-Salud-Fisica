@@ -1,6 +1,7 @@
 // modal-hc.component.ts
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ArchivoHC, HistoriaClinicaResponse } from '../../services/historial-clinica.service';
 
 
@@ -15,6 +16,7 @@ export class ModalHcComponent {
   @Input() hc!: HistoriaClinicaResponse;
   @Output() cerrar = new EventEmitter<void>();
 
+  private sanitizer = inject(DomSanitizer);
   archivoActivo: ArchivoHC | null = null;
 
   ngOnInit() {
@@ -29,6 +31,10 @@ export class ModalHcComponent {
 
   esPDF(url: string): boolean {
     return /\.pdf$/i.test(url);
+  }
+
+  obtenerUrlSegura(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   seleccionarArchivo(archivo: ArchivoHC) {

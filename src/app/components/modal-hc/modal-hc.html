@@ -63,7 +63,7 @@
             class="preview-img" />
           <iframe
             *ngIf="esPDF(archivoActivo.url)"
-            [src]="archivoActivo.url"
+            [src]="obtenerUrlSegura(archivoActivo.url)"
             class="preview-pdf">
           </iframe>
         </ng-container>
