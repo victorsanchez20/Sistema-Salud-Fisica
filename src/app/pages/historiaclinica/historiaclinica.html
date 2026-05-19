@@ -132,5 +132,47 @@
       </table>
     </div>
 
+
+    <!-- Sección historial de documentos (después del hc-section de citas) -->
+    <div class="hc-section">
+      <h3>Historial de consultas</h3>
+      <span style="font-size:13px; color:#94a3b8;">{{ historiasClinicas.length }} registros</span>
+
+      <div class="hc-historial-lista">
+        <div
+          *ngFor="let hc of historiasClinicas"
+          class="hc-historial-item"
+          (click)="abrirModal(hc)">
+
+          <div class="hc-historial-dot"></div>
+
+          <div class="hc-historial-content">
+            <div class="hc-historial-meta">
+              <span class="hc-historial-fecha">{{ hc.fechaRegistro | date:'dd MMM yyyy' }}</span>
+              <span class="hc-historial-responsable">{{ hc.responsable }} · {{ hc.especialidad }}</span>
+            </div>
+            <p class="hc-historial-descripcion">{{ hc.descripcion }}</p>
+            <div class="hc-historial-archivos" *ngIf="hc.archivos.length > 0">
+              <span *ngFor="let a of hc.archivos" class="hc-archivo-tag">
+                {{ a.categoria }}
+              </span>
+            </div>
+          </div>
+          <div class="hc-chev" aria-hidden="true">›</div>
+        </div>
+
+        <p *ngIf="historiasClinicas.length === 0" style="color:#94a3b8; font-size:14px; padding:16px 0;">
+          Sin registros de historia clínica
+        </p>
+      </div>
+    </div>
+
+  <!-- Modal -->
+    <app-modal-hc
+      *ngIf="hcSeleccionada"
+      [hc]="hcSeleccionada"
+      (cerrar)="cerrarModal()">
+    </app-modal-hc>
+
   </div>
 </section>

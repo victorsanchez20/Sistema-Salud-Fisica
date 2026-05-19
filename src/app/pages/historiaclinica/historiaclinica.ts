@@ -7,11 +7,13 @@ import { CitaService } from '../../services/cita.service';
 import { Cita } from '../../models/cita.model';
 import { FormsModule } from "@angular/forms";
 import { SesionService } from '../../services/sesion.service';
+import { HistoriaClinicaResponse, HistorialClinicaService } from '../../services/historial-clinica.service';
+import { ModalHcComponent } from '../../components/modal-hc/modal-hc';
 
 @Component({
   selector: 'app-historiaclinica',
   standalone: true,
-  imports: [CommonModule, DatePipe, NgFor, FormsModule],
+  imports: [CommonModule, DatePipe, NgFor, FormsModule, ModalHcComponent],
   templateUrl: './historiaclinica.html',
   styleUrl: './historiaclinica.css',
 })
@@ -24,12 +26,16 @@ export class Historiaclinica implements OnInit {
   openIndex: number | null = null;
   editar = false;
 
+  historiasClinicas: HistoriaClinicaResponse[] = [];
+  hcSeleccionada: HistoriaClinicaResponse | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private pacienteService: PacienteService,
     private cdr: ChangeDetectorRef,
     private sesionService: SesionService,
-    private citaService: CitaService
+    private citaService: CitaService,
+    private historiaClinicaService: HistorialClinicaService
   ) {}
 
   ngOnInit(): void {
@@ -56,11 +62,30 @@ export class Historiaclinica implements OnInit {
         
         if (this.paciente.id) {
           this.cargarCitas(this.paciente.id);
+          this.cargarHistoriasClinicas(this.paciente.id);
           this.cdr.detectChanges();
         }
       },
       error: (err) => console.error(err),
     });
+  }
+
+  cargarHistoriasClinicas(pacienteId: number) {
+    this.historiaClinicaService.obtenerPorPaciente(pacienteId).subscribe({
+      next: (data) => {
+        this.historiasClinicas = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  abrirModal(hc: HistoriaClinicaResponse) {
+    this.hcSeleccionada = hc;
+  }
+
+  cerrarModal() {
+    this.hcSeleccionada = null;
   }
 
   cargarCitas(idPaciente: number) {

@@ -31,7 +31,9 @@
       </div>
       <div class="ihc-acciones">
         <button class="btn btn-ghost" (click)="limpiar()">Limpiar</button>
-        <button class="btn btn-primary" (click)="guardar()">Guardar HC</button>
+        <button class="btn btn-primary" (click)="guardar()" [disabled]="subiendo">
+          {{ subiendo ? 'Guardando...' : 'Guardar Hc' }}
+        </button>
       </div>
     </div>
   </div>

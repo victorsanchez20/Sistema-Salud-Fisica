@@ -1,0 +1,79 @@
+<!-- modal-hc.html -->
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal-container">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <span class="modal-especialidad">{{ hc.especialidad }}</span>
+        <span class="modal-fecha">{{ hc.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <button class="modal-close" (click)="cerrar.emit()">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+
+      <!-- Columna izquierda: info -->
+      <div class="modal-info">
+        <div class="modal-field">
+          <label>Responsable</label>
+          <p>{{ hc.responsable }}</p>
+        </div>
+        <div class="modal-field">
+          <label>Especialidad</label>
+          <p>{{ hc.especialidad }}</p>
+        </div>
+        <div class="modal-field">
+          <label>Descripción</label>
+          <p>{{ hc.descripcion }}</p>
+        </div>
+
+        <!-- Lista de archivos -->
+        <div class="modal-field" *ngIf="hc.archivos.length > 0">
+          <label>Documentos adjuntos</label>
+          <div class="modal-archivos-lista">
+            <div
+              *ngFor="let archivo of hc.archivos"
+              class="modal-archivo-item"
+              [class.activo]="archivoActivo === archivo"
+              (click)="seleccionarArchivo(archivo)">
+              <span class="archivo-icono">{{ esPDF(archivo.url) ? '📄' : '🖼️' }}</span>
+              <div>
+                <p class="archivo-nombre">{{ archivo.nombreOriginal }}</p>
+                <span class="archivo-categoria">{{ archivo.categoria }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-field" *ngIf="!hc.archivos || hc.archivos.length === 0">
+          <label>Documentos adjuntos</label>
+          <p style="color: #94a3b8;">Sin documentos adjuntos</p>
+        </div>
+      </div>
+
+      <!-- Columna derecha: preview -->
+      <div class="modal-preview">
+        <ng-container *ngIf="archivoActivo; else sinArchivo">
+          <img
+            *ngIf="esImagen(archivoActivo.url)"
+            [src]="archivoActivo.url"
+            alt="Vista previa"
+            class="preview-img" />
+          <iframe
+            *ngIf="esPDF(archivoActivo.url)"
+            [src]="archivoActivo.url"
+            class="preview-pdf">
+          </iframe>
+        </ng-container>
+        <ng-template #sinArchivo>
+          <div class="preview-empty">
+            <p>Sin documentos para previsualizar</p>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+</div>

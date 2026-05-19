@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { Paciente } from '../../models/paciente.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { SupabaseService } from '../../services/supabase.service';
+import { environment } from '../../../environments/environment';
 
 interface Documento {
   id: number;
@@ -26,6 +29,9 @@ export class InsertarHc implements OnInit {
   previewUrl: SafeResourceUrl | null = null;
   previewUrlRaw: string | null = null;
   tipoArchivo: string = '';
+  
+  subiendo = false;
+  urlsSubidad: string[] = [];
 
   ngOnInit(): void {
   }
@@ -41,8 +47,10 @@ export class InsertarHc implements OnInit {
 
   constructor(
     private pacienteService: PacienteService,
+    private supabaseService: SupabaseService,
     private cd: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private http: HttpClient
   ) {
   }
 
@@ -83,8 +91,54 @@ export class InsertarHc implements OnInit {
     this.descripcion = '';
   }
 
-  guardar() {
-    console.log('Guardando datos de la historia clínica...');
+  async guardar() {
+
+    // Validator
+    if (!this.paciente.id) {
+      alert('Debe buscar un paciente primero');
+      return;
+    }
+
+    this.subiendo = true;
+    this.urlsSubidad = [];
+
+    try {
+      //1. Subir cada archivo a supabase
+      for (const doc of this.documentos) {
+        const url = await this.supabaseService.subirArchivo(doc.archivo, this.paciente.id!);
+        this.urlsSubidad.push(url);
+      }
+
+      // 2. Enviar datos + URLs al backend spring boot
+      const payload = {
+        pacienteId: this.paciente.id,
+        responsable: this.responsable,
+        especialidad: this.especialidad,
+        descripcion: this.descripcion,
+        archivos: this.documentos.map((doc, i) => ({
+          url: this.urlsSubidad[i],
+          tipo: doc.tipoArchivo,
+          nombre: doc.label,
+          categoria: this.docTipo
+        }))
+      };
+
+      await this.http.post(`${environment.api}/api/historia-clinica`, payload, {
+        responseType: 'text'
+      }).toPromise();
+
+      alert('Historia clinica guardada correctamente');
+      this.limpiar();
+      this.documentos = [];
+      this.paginaActual = 1;
+      this.docSeleccionado = null;
+
+    } catch (error) {
+      console.error('Error al guardar:', error);
+      alert('Ocurrió un error al guardar. Revisa la consola.');
+    } finally {
+      this.subiendo = false;
+    }
   }
 
   anterior() { 
