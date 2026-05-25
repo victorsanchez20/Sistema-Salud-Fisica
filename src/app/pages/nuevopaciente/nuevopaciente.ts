@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Paciente } from '../../models/paciente.model';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { CommonModule } from '@angular/common';
 
@@ -21,16 +21,20 @@ export class Nuevopaciente {
     private pacienteService: PacienteService
   ) {
     this.pacienteForm = this.fb.group({
-      apaterno: ['', Validators.required],
-      amaterno: ['', Validators.required],
-      nombre: ['', Validators.required],
-      dni: ['', Validators.required],
-      hc: [''],
+      apaterno: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
+      amaterno: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
+      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
+      dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
+      hc: ['', Validators.pattern('^[A-Za-z0-9\-]{1,20}$')],
       nacimiento: [''],
-      nacionalidad: [''],
-      direccion: [''],
-      telefono: ['', Validators.required],
-    })
+      nacionalidad: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
+      direccion: ['', [Validators.required, Validators.minLength(5)]],
+      telefono: ['', [Validators.required,  Validators.pattern('^[0-9]{9}$')]],
+    });
+  }
+
+  get formControls() {
+    return this.pacienteForm.controls;
   }
 
   guardar() {
@@ -51,6 +55,12 @@ export class Nuevopaciente {
         this.pacienteForm.reset();
       },
       error: (err) => {
+
+        if (err.status === 409) {
+          alert(err.error.message);
+          return;
+        }
+
           console.error(err);
           alert('Error al registrar paciente');
       },

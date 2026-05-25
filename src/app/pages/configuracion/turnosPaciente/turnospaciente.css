@@ -35,8 +35,9 @@
 .tabla-pacientes th {
   background: #2c3e50;
   color: white;
-  padding: 12px;
+  padding: 10px;
   text-align: left;
+
 }
 
 .tabla-pacientes td {

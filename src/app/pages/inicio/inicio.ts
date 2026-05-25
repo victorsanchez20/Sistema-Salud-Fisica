@@ -1,7 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SesionService } from '../../services/sesion.service';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { PacienteService } from '../../services/paciente.service';
+import { count, forkJoin, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DoctorService } from '../../services/doctor.service';
 
 interface Metricas {
   pacientes: number;
@@ -50,11 +54,13 @@ export class Inicio implements OnInit {
   fechaMostrada!: string;
   nombreDoctor!: string;
 
+  private destroyedRef = inject(DestroyRef);
+
   metricas: Metricas = {
-    pacientes: 1247,
+    pacientes: 0,
     historiasClinicas: 1189,
     citas: 3420,
-    terapias: 8945,
+    terapias: 0,
     usuarios: 48,
     citasCompletadas: 3156
   };
@@ -68,14 +74,7 @@ export class Inicio implements OnInit {
     { mes: 'Jun', citas: 320, altura: '98%' },
   ];
 
-  pacientesPorMes: PacienteMes[] = [
-    { mes: 'Ene', registrados: 45, altura: '60%' },
-    { mes: 'Feb', registrados: 52, altura: '70%' },
-    { mes: 'Mar', registrados: 38, altura: '50%' },
-    { mes: 'Abr', registrados: 61, altura: '82%' },
-    { mes: 'May', registrados: 55, altura: '74%' },
-    { mes: 'Jun', registrados: 48, altura: '65%' },
-  ];
+  pacientesPorMes: PacienteMes[] = [];
 
   actividadSemanal: ActividadDia[] = [
     { dia: 'Lun', turnos: 42, altura: '90%' },
@@ -107,24 +106,71 @@ export class Inicio implements OnInit {
 
   constructor(
     private sesionService: SesionService, 
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private pacienteService: PacienteService,
+    private doctorService: DoctorService
   ) {}
 
   ngOnInit(): void {
-    this.sesionService.getSesionesProximas()
-      .subscribe({
-        next: (res) => {
-          this.sesiones = res;
+    forkJoin({
+      sesiones: this.sesionService.getSesionesProximas(),
+      totalPacientes: this.pacienteService.cantidadPaciente(),
+      totalDoctores: this.doctorService.leer().pipe(map(doctores => doctores.length)),
+      pacientesPorMes: this.pacienteService.cantidadPacientePorMes(),
+    }).pipe(
+      takeUntilDestroyed(this.destroyedRef)
 
-          if (res.length) {
-            this.fechaMostrada = res[0].fecha;
-            this.nombreDoctor = res[0].id_cita.id_doctor?.nombre;
+    ).subscribe({
+      next: ({sesiones, totalPacientes, totalDoctores, pacientesPorMes}) => {
+        this.metricas.pacientes = totalPacientes;
+        this.metricas.terapias = totalDoctores;
+        this.sesiones = sesiones;
+        this.buildChartData(pacientesPorMes);
+
+        if (sesiones.length) {
+            this.fechaMostrada = sesiones[0].fecha;
+            this.nombreDoctor = sesiones[0].id_cita.id_doctor?.nombre;
           }
+      },
 
-          this.cargando = false;
-          this.cdr.detectChanges();
-        },
-        error: () => this.cargando = false
-      });
+      error: (err) => console.error('Error al cargar total de pacientes:', err),
+
+      complete: () => {
+        this.cargando = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  getLastSixMonths(): {key: string, label: string}[] {
+    const months: {key: string, label: string}[] = [];
+    const now = new Date();
+    const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = d.toLocaleString('en-US', {month: 'long'}).toUpperCase() + ' ' + d.getFullYear();
+      const label = monthNames[d.getMonth()] + ' ' + d.getFullYear();
+      
+      months.push({key, label});
+    }
+
+    return months;
+  }
+
+  buildChartData(apiResponse: {[key: string]: number}): void {
+    const last6 = this.getLastSixMonths();
+    const maxVal = Math.max(...last6.map(m => apiResponse[m.key] ?? 0), 1);
+
+    this.pacientesPorMes = last6.map(m => {
+      const registrados = apiResponse[m.key] ?? 0;
+      const altura = Math.round((registrados / maxVal) * 100) + '%';
+
+      return {
+        mes: m.label,
+        registrados,
+        altura
+      };
+    });
   }
 }

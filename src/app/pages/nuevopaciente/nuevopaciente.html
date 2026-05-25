@@ -1,16 +1,25 @@
 <section class="patient-form-container">
+  
+  <!-- HEADER DEL FORMULARIO -->
+  <div class="form-header">
+    <h2>Registro de Paciente</h2>
+    <p>Ingresa los datos personales para crear un nuevo expediente médico.</p>
+  </div>
 
-  <!-- FOTO (solo visual por ahora) -->
+  <!-- FOTO -->
   <div class="photo-upload">
     <div class="photo-preview">
       <i class="fa-solid fa-user"></i>
     </div>
-
-    <label class="upload-btn">
-      <i class="fa-solid fa-camera"></i>
-      Subir foto
-      <input type="file" accept="image/*" hidden>
-    </label>
+    
+    <div class="photo-actions">
+      <label class="upload-btn">
+        <i class="fa-solid fa-camera"></i>
+        Subir foto
+        <input type="file" accept="image/*" hidden>
+      </label>
+      <span class="upload-hint">JPG, PNG hasta 5MB</span>
+    </div>
   </div>
 
   <!-- FORM -->
@@ -18,27 +27,46 @@
 
     <div class="form-group">
       <label>Apellido Paterno</label>
-      <input type="text" formControlName="apaterno">
+      <input type="text" formControlName="apaterno" placeholder="Ej. Pérez">
+      <small style="color:red" *ngIf="formControls['apaterno'].invalid && formControls['apaterno'].touched">
+        <span *ngIf="formControls['apaterno'].errors?.['required']">El apellido paterno es obligatorio.</span>
+        <span *ngIf="formControls['apaterno'].errors?.['pattern']">Solo se permiten letras y espacios.</span>
+      </small>
     </div>
 
     <div class="form-group">
       <label>Apellido Materno</label>
-      <input type="text" formControlName="amaterno">
+      <input type="text" formControlName="amaterno" placeholder="Ej. Gómez">
+      <small style="color:red" *ngIf="formControls['amaterno'].invalid && formControls['amaterno'].touched">
+        <span *ngIf="formControls['amaterno'].errors?.['required']">El apellido materno es obligatorio.</span>
+        <span *ngIf="formControls['amaterno'].errors?.['pattern']">Solo se permiten letras y espacios.</span>
+      </small>
     </div>
 
     <div class="form-group">
       <label>Nombres</label>
-      <input type="text" formControlName="nombre">
+      <input type="text" formControlName="nombre" placeholder="Ej. Juan Carlos">
+      <small style="color:red" *ngIf="formControls['nombre'].invalid && formControls['nombre'].touched">
+        <span *ngIf="formControls['nombre'].errors?.['required']">El nombre es obligatorio.</span>
+        <span *ngIf="formControls['nombre'].errors?.['pattern']">Solo se permiten letras y espacios.</span>
+      </small>
     </div>
 
     <div class="form-group">
       <label>Documento de Identidad</label>
-      <input type="text" formControlName="dni">
+      <input type="text" formControlName="dni" placeholder="Ej. 12345678">
+      <small style="color:red" *ngIf="formControls['dni'].invalid && formControls['dni'].touched">
+        <span *ngIf="formControls['dni'].errors?.['required']">El DNI es obligatorio.</span>
+        <span *ngIf="formControls['dni'].errors?.['pattern']">El DNI debe tener 8 dígitos numéricos.</span>
+      </small>
     </div>
 
     <div class="form-group">
       <label>Historia Clínica</label>
-      <input type="text" formControlName="hc">
+      <input type="text" formControlName="hc" placeholder="N° de Historia">
+      <small style="color:red" *ngIf="formControls['hc'].invalid && formControls['hc'].touched">
+        <span *ngIf="formControls['hc'].errors?.['pattern']">La historia clínica solo puede contener letras, números y guiones.</span>
+      </small>
     </div>
 
     <div class="form-group">
@@ -46,28 +74,45 @@
       <input type="date" formControlName="nacimiento">
     </div>
 
-    <div class="form-group">
-      <label>Nacionalidad</label>
-      <input type="text" formControlName="nacionalidad">
-    </div>
-
     <div class="form-group full">
       <label>Dirección</label>
-      <input type="text" formControlName="direccion">
+      <input type="text" formControlName="direccion" placeholder="Av. Principal 123, Ciudad">
+      <small style="color:red" *ngIf="formControls['direccion'].invalid && formControls['direccion'].touched">
+        <span *ngIf="formControls['direccion'].errors?.['required']">La dirección es obligatoria.</span>
+        <span *ngIf="formControls['direccion'].errors?.['minlength']">La dirección debe tener al menos 5 caracteres.</span>
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Nacionalidad</label>
+      <input type="text" formControlName="nacionalidad" placeholder="Ej. Peruana">
+      <small style="color:red" *ngIf="formControls['nacionalidad'].invalid && formControls['nacionalidad'].touched">
+        <span *ngIf="formControls['nacionalidad'].errors?.['required']">La nacionalidad es obligatoria.</span>
+        <span *ngIf="formControls['nacionalidad'].errors?.['pattern']">Solo se permiten letras y espacios.</span>
+      </small>
     </div>
 
     <div class="form-group">
       <label>Número de Celular</label>
-      <input type="tel" formControlName="telefono">
+      <input 
+        type="tel" 
+        formControlName="telefono" 
+        placeholder="987654321" 
+        maxlength="9">
+      <small style="color:red" *ngIf="formControls['telefono'].invalid && formControls['telefono'].touched">
+        <span *ngIf="formControls['telefono'].errors?.['required']">El teléfono es obligatorio.</span>
+        <span *ngIf="formControls['telefono'].errors?.['pattern']">El teléfono debe tener 9 dígitos numéricos.</span>
+      </small>
     </div>
 
   </form>
 
   <!-- ACTION -->
   <div class="form-actions">
-    <button class="btn-primary" (click)="guardar()">
+    <button type="button" class="btn-secondary" hidden>Limpiar</button>
+    <button type="submit" class="btn-primary" (click)="guardar()">
       <i class="fa-solid fa-check"></i>
-      Agregar Paciente
+      Guardar Paciente
     </button>
   </div>
 

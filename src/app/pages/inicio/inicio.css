@@ -180,11 +180,14 @@
   align-items: center;
   flex: 1;
   gap: 8px;
+  justify-content: flex-end;
+  height: 100%;
 }
 
 .chart-bar {
   width: 100%;
   max-width: 40px;
+  min-height: 4px;
   border-radius: 6px 6px 2px 2px;
   transition: all 0.3s ease;
   position: relative;

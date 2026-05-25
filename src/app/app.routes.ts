@@ -11,6 +11,7 @@ import { Configuracion } from './pages/configuracion/configuracion';
 import { Turnospaciente } from './pages/configuracion/turnosPaciente/turnospaciente';
 import { Inicio } from './pages/inicio/inicio';
 import { InsertarHc } from './pages/insertar-hc/insertar-hc';
+import { Referencias } from './pages/referencias/referencias';
 
 export const routes: Routes = [
     {
@@ -24,8 +25,9 @@ export const routes: Routes = [
             { path: 'citar', component: Citar},
             { path: 'calendario', component: Calendario},
             { path: 'insertar-hc', component: InsertarHc},
+            { path: 'referencias', component: Referencias},
             { path: 'configuracion', component: Configuracion},
-            { path: 'datos/:nombre', component: Turnospaciente}
+            { path: 'datos/:nombre', component: Turnospaciente},
         ]
     }
 ];

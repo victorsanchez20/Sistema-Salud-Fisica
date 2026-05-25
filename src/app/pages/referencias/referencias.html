@@ -1,0 +1,83 @@
+<section class="referencias-page">
+  <div class="referencias-header">
+    <div>
+      <h1>Referencias médicas</h1>
+      <p class="subtitulo">Consulta el historial de referencias por DNI y revisa el estado actual de cada envío.</p>
+    </div>
+
+    <div class="busqueda-card">
+      <label for="dni">Buscar por DNI</label>
+      <div class="input-row">
+        <input
+          id="dni"
+          name="dni"
+          type="text"
+          [(ngModel)]="dni"
+          placeholder="10376656"
+          maxlength="8"
+        />
+        <button type="button" class="btn-primary" (click)="buscarReferencias()">
+          Buscar
+        </button>
+      </div>
+      <p class="texto-ayuda">La consulta se realiza contra el endpoint <code>/referencias?dni=</code>.</p>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </div>
+  </div>
+
+  <div class="referencias-body" *ngIf="!cargando">
+    <div class="status-row" *ngIf="referencias.length > 0">
+      <span class="badge">Resultados: {{ total }}</span>
+    </div>
+
+    <div class="table-wrapper" *ngIf="referencias.length > 0; else emptyState">
+      <table>
+        <thead>
+          <tr>
+            <th>Creado</th>
+            <th>Paciente</th>
+            <th>DNI</th>
+            <th>Destino</th>
+            <th>Servicio</th>
+            <th>Referente</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of referencias">
+            <td>{{ item.creado }}</td>
+            <td>{{ item.nombre_paciente }}</td>
+            <td>{{ item.nro_documento }}</td>
+            <td>{{ item.establecimiento_destino }}</td>
+            <td>{{ item.servicio_destino }}</td>
+            <td>{{ item.personal_refiere }}</td>
+            <td>
+              <span class="status-pill" [ngClass]="{
+                pendiente: item.estado_actual === 'PENDIENTE',
+                recibido: item.estado_actual === 'PACIENTE RECIBIDO',
+                citado: item.estado_actual === 'PACIENTE CITADO',
+                observado: item.estado_actual == 'OBSERVADO',
+                contrareferido: item.estado_actual == 'CONTRAREFERIDO',
+                aceptado: item.estado_actual == 'ACEPTADO',
+                anulado: item.estado_actual == 'ANULADO'
+              }">
+                {{ item.estado_actual }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <p>No hay resultados para mostrar. Usa el DNI y presiona Buscar.</p>
+    </div>
+  </ng-template>
+
+  <div class="loader" *ngIf="cargando">
+    <div class="spinner"></div>
+    <span>Cargando referencias...</span>
+  </div>
+</section>

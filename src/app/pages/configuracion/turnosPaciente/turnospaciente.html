@@ -53,6 +53,9 @@
       <tr>
         <th>#</th>
         <th>Paciente</th>
+        <th>DNI</th>
+        <th>HC</th>
+        <th>Fecha de Nacimiento</th>
         <th>Fecha</th>
         <th>Hora</th>
       </tr>
@@ -64,6 +67,9 @@
         (click)="irHistoria(p.hc)">
         <td>{{ i + 1 }}</td>
         <td>{{ p.nombre }}</td>
+        <td>{{ p.dni }}</td>
+        <td>{{ p.hc }}</td>
+        <td>{{ p.nacimiento }}</td>
         <td>{{ p.fecha }}</td>
         <td>{{ p.hora }}</td>
       </tr>

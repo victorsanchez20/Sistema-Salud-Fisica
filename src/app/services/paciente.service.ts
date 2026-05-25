@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Paciente } from '../models/paciente.model';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -42,6 +43,14 @@ export class PacienteService {
 
   eliminar(id: number) {
     return this.http.delete<Paciente[]>(`${this.APIURL}/${id}`);
+  }
+
+  cantidadPaciente() {
+    return this.http.get<number>(`${this.APIURL}/cantidad-pacientes`)
+  }
+
+  cantidadPacientePorMes(): Observable<{[key: string]: number}> {
+    return this.http.get<{[key: string]: number}>(`${this.APIURL}/cantidad-pacientes-ultimos-meses`);
   }
 
 }
