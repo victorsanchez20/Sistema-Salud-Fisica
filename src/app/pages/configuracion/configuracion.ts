@@ -23,13 +23,26 @@ export class Configuracion implements OnInit {
   doctorForm: FormGroup;
   showTerapista = false;
   
+  //Paginacion Terapista
+  pagedDoctores: Doctor[] = [];
+  pageDoctor = 1;
+  itemsPerPage = 10;
+
   turnos: Turno[] = [];
   turnoForm!: FormGroup;
   showTurno = false;
   
+  //Paginación turnos
+  pagedTurnos: Turno[] = [];
+  pageTurno= 1;
+
   diagnostico: Diagnostico[] = [];
   diagnosticoForm: FormGroup;
   showDiagnostico = false;
+
+  // Paginacion DiagnosticoService
+  pagedDiagnosticos: Diagnostico[] = [];
+  pageDiagnostico = 1;
 
   editandoDoctor: Doctor | null = null;
   editandoDiagnostico: Diagnostico | null = null;
@@ -87,13 +100,16 @@ export class Configuracion implements OnInit {
             this.doctorForm.reset();
             this.editandoDoctor = null;
           });
+      return;
     }
 
-    // Crear 
+    // Crear
     this.doctorService.crear(doctor).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Doctor registrado correctamente', timer: 1200, showConfirmButton: false });
+        this.cargarDoctores();
         this.doctorForm.reset();
+        this.closeTerapistaModal();
       },
       error: (err) => {
         console.error(err);
@@ -123,13 +139,16 @@ export class Configuracion implements OnInit {
           this.editandoDiagnostico = null;
           this.cdr.detectChanges();
         });
+      return;
     }
 
     // Crear
     this.diagnosticoService.crear(diagnostico).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Diagnostico registrado correctamente', timer: 1200, showConfirmButton: false });
+        this.cargarDiagnosticos();
         this.diagnosticoForm.reset();
+        this.closeDiagnosticoModal();
       },
       error: (err) => {
         console.error(err);
@@ -157,6 +176,7 @@ export class Configuracion implements OnInit {
             this.editandoTurno = null;
             this.cdr.detectChanges();
           });
+      return;
     }
 
     // Crear
@@ -178,6 +198,8 @@ export class Configuracion implements OnInit {
     this.turnoService.leer().subscribe({
       next: (data) => {
         this.turnos = data;
+        this.actualizarPaginacionTurnos();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('❌ Error al cargar turnos', err);
@@ -190,7 +212,8 @@ export class Configuracion implements OnInit {
         this.doctor = data.map(d => ({
           ...d,
         }));
-
+        this.pageDoctor = 1;
+        this.actualizarPaginacionDoctores();
         this.cdr.detectChanges();
       },
       error: (err) => console.error(err)
@@ -202,6 +225,8 @@ export class Configuracion implements OnInit {
         this.diagnostico = data.map(dia => ({
           ...dia,
         }));
+        this.pageDiagnostico = 1;
+        this.actualizarPaginacionDiagnosticos();
         this.cdr.detectChanges();
       },
       error: (err) => console.error(err)
@@ -330,5 +355,42 @@ export class Configuracion implements OnInit {
   irTurnosPaciente(nombre: string) {
     this.router.navigate(['/datos', nombre]);
 
+  }
+
+  /* Métodos auxiliares para actualizar las listas paginadas */
+  actualizarPaginacionDoctores() {
+    const inicio = (this.pageDoctor - 1) * this.itemsPerPage;
+    this.pagedDoctores = this.doctor.slice(inicio, inicio + this.itemsPerPage);
+  }
+  actualizarPaginacionDiagnosticos() {
+    const inicio = (this.pageDiagnostico - 1) * this.itemsPerPage;
+    this.pagedDiagnosticos = this.diagnostico.slice(inicio, inicio + this.itemsPerPage);
+  }
+  actualizarPaginacionTurnos() {
+    const inicio = (this.pageTurno - 1) * this.itemsPerPage;
+    this.pagedTurnos = this.turnos.slice(inicio, inicio + this.itemsPerPage);
+  }
+  /* Getters para calcular el total de páginas */
+  get totalPagesDoctor(): number { 
+    return Math.ceil(this.doctor.length / this.itemsPerPage); 
+  }
+  get totalPagesDiagnostico(): number { 
+    return Math.ceil(this.diagnostico.length / this.itemsPerPage); 
+  }
+  get totalPagesTurno(): number { 
+    return Math.ceil(this.turnos.length / this.itemsPerPage); 
+  }
+  /* Cambiar de páginas */
+  cambiarPaginaDoctor(accion: number) {
+    this.pageDoctor += accion;
+    this.actualizarPaginacionDoctores();
+  }
+  cambiarPaginaDiagnostico(accion: number) {
+    this.pageDiagnostico += accion;
+    this.actualizarPaginacionDiagnosticos();
+  }
+  cambiarPaginaTurno(accion: number) {
+    this.pageTurno += accion;
+    this.actualizarPaginacionTurnos();
   }
 }

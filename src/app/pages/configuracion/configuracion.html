@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let d of doctor"
+        <tr *ngFor="let d of pagedDoctores"
         (click)="irTurnosPaciente(d.nombre)"
         style="cursor: pointer;">
           <td>{{ d.id }}</td>
@@ -38,6 +38,25 @@
         </tr>
       </tbody>
     </table>
+
+    <div 
+      class="pagination-container" 
+      *ngIf="doctor.length > itemsPerPage">
+        <button 
+          class="btn-pag" 
+          (click)="cambiarPaginaDoctor(-1)" 
+          [disabled]="pageDoctor === 1">
+          Anterior
+        </button>
+        <span>Página {{ pageDoctor }} de {{ totalPagesDoctor }}</span>
+        <button 
+          class="btn-pag" 
+          (click)="cambiarPaginaDoctor(1)" 
+          [disabled]="pageDoctor === totalPagesDoctor">
+          Siguiente
+        </button>
+    </div>
+
   </div>
 
   <!-- DIAGNÓSTICOS -->
@@ -58,7 +77,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let d of diagnostico">
+        <tr *ngFor="let d of pagedDiagnosticos" style="cursor: pointer;">
           <td>{{ d.id }}</td>
           <td>{{ d.nombre }}</td>
           <td class="td-actions">
@@ -76,6 +95,16 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="pagination-container" *ngIf="diagnostico.length > itemsPerPage">
+      <button class="btn-pag" (click)="cambiarPaginaDiagnostico(-1)" [disabled]="pageDiagnostico === 1">
+        Anterior
+      </button>
+      <span>Página {{ pageDiagnostico }} de {{ totalPagesDiagnostico }}</span>
+      <button class="btn-pag" (click)="cambiarPaginaDiagnostico(1)" [disabled]="pageDiagnostico === totalPagesDiagnostico">
+        Siguiente
+      </button>
+    </div>
   </div>
 
   <!-- TURNOS -->
@@ -98,7 +127,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let t of turnos">
+        <tr *ngFor="let t of pagedTurnos">
           <td>{{ t.id }}</td>
           <td>{{ t.codigo }}</td>
           <td>{{ t.hora_inicio }}</td>
@@ -118,6 +147,16 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="pagination-container" *ngIf="turnos.length > itemsPerPage">
+      <button class="btn-pag" (click)="cambiarPaginaTurno(-1)" [disabled]="pageTurno === 1">
+        Anterior
+      </button>
+      <span>Página {{ pageTurno }} de {{ totalPagesTurno }}</span>
+      <button class="btn-pag" (click)="cambiarPaginaTurno(1)" [disabled]="pageTurno === totalPagesTurno">
+        Siguiente
+      </button>
+    </div>
   </div>
 </section>
 
