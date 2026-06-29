@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
 export interface ArchivoHC {
+  id?: number;
   url: string;
   tipoArchivo: string;
   nombreOriginal: string;
@@ -19,7 +20,14 @@ export interface HistoriaClinicaResponse {
   archivos: ArchivoHC[];
 }
 
-
+export interface HistoriaClinicaUpdate {
+  id?: number;
+  pacienteId: number;
+  responsable: string;
+  especialidad: string;
+  descripcion: string;
+  archivos: ArchivoHC[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +38,10 @@ export class HistorialClinicaService {
   obtenerPorPaciente(pacienteId: number): Observable<HistoriaClinicaResponse[]> {
     return this.http.get<HistoriaClinicaResponse[]>(
     `${environment.api}/api/historia-clinica/paciente/${pacienteId}`);
+  }
+
+  actualizar(id: number, dto: HistoriaClinicaUpdate): Observable<any> {
+    return this.http.put(`${environment.api}/api/historia-clinica/${id}`, dto);
   }
 
   ultimahc() {

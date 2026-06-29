@@ -39,5 +39,12 @@ export class SesionService {
   );
 }
 
+  actualizarEstado(id: number, estado: number) {
+    return this.http.put<any>(`${this.api}/${id}/estado`, { estado });
+  }
+
+  contarEstados() {
+    return this.http.get<{ registrada: number; completada: number; cancelada: number }>(`${this.api}/estados-count`);
+  }
 
 }

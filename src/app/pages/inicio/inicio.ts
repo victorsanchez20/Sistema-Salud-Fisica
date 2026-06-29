@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { SesionService } from '../../services/sesion.service';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { PacienteService } from '../../services/paciente.service';
-import { count, forkJoin, map } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DoctorService } from '../../services/doctor.service';
 import { DisponibilidadDoctorService } from '../../services/disponibilidad-doctor.service';
@@ -39,7 +39,7 @@ interface ActividadDia {
 interface EstadoCitas {
   total: number;
   completadas: number;
-  pendientes: number;
+  registradas: number;
   canceladas: number;
 }
 
@@ -82,14 +82,14 @@ export class Inicio implements OnInit {
   estadoCitas: EstadoCitas = {
     total: 0,
     completadas: 0,
-    pendientes: 0,
+    registradas: 0,
     canceladas: 0
   };
 
   get donutGradient(): string {
     const total = this.estadoCitas.total;
     const completadas = (this.estadoCitas.completadas / total) * 100;
-    const pendientes = (this.estadoCitas.pendientes / total) * 100;
+    const pendientes = (this.estadoCitas.registradas / total) * 100;
     
     return `conic-gradient(
       #22c55e 0% ${completadas}%,
@@ -110,20 +110,24 @@ export class Inicio implements OnInit {
 
   ngOnInit(): void {
     forkJoin({
-      sesiones: this.sesionService.getSesionesProximas(),
-      totalPacientes: this.pacienteService.cantidadPaciente(),
-      totalDoctores: this.doctorService.leer().pipe(map(doctores => doctores.length)),
-      pacientesPorMes: this.pacienteService.cantidadPacientePorMes(),
-      totalDisponibilidad: this.disponibilidadService.cantidadDisponibilidad(),
-      hcmayor: this.historialClinicaService.ultimahc(),
-      totalDiagnostico: this.diagnosticoService.totalDiagnostico(),
-      citasPorFecha: this.disponibilidadService.cantidadDisponibilidadPorFecha()
+      sesiones: this.sesionService.getSesionesProximas().pipe(catchError(() => of([]))),
+      totalPacientes: this.pacienteService.cantidadPaciente().pipe(catchError(() => of(0))),
+      totalDoctores: this.doctorService.leer().pipe(
+        map(doctores => doctores.length),
+        catchError(() => of(0))
+      ),
+      pacientesPorMes: this.pacienteService.cantidadPacientePorMes().pipe(catchError(() => of({}))),
+      totalDisponibilidad: this.disponibilidadService.cantidadDisponibilidad().pipe(catchError(() => of(0))),
+      hcmayor: this.historialClinicaService.ultimahc().pipe(catchError(() => of(0))),
+      totalDiagnostico: this.diagnosticoService.totalDiagnostico().pipe(catchError(() => of(0))),
+      citasPorFecha: this.disponibilidadService.cantidadDisponibilidadPorFecha().pipe(catchError(() => of({}))),
+      sessionEstados: this.sesionService.contarEstados().pipe(catchError(() => of({ registrada: 0, completada: 0, cancelada: 0 })))
     }).pipe(
       takeUntilDestroyed(this.destroyedRef)
 
     ).subscribe({
       next: ({sesiones, totalPacientes, totalDoctores, pacientesPorMes, totalDisponibilidad, hcmayor,
-          totalDiagnostico, citasPorFecha
+          totalDiagnostico, citasPorFecha, sessionEstados
       }) => {
         this.metricas.pacientes = totalPacientes;
         this.metricas.terapias = totalDoctores;
@@ -133,6 +137,12 @@ export class Inicio implements OnInit {
         this.metricas.hc = hcmayor;
         this.metricas.diagnostico = totalDiagnostico;
         this.buildChartCitas(citasPorFecha);
+        this.estadoCitas = {
+          total: sessionEstados.registrada + sessionEstados.completada + sessionEstados.cancelada,
+          completadas: sessionEstados.completada,
+          registradas: sessionEstados.registrada,
+          canceladas: sessionEstados.cancelada
+        };
 
         if (sesiones.length) {
             this.fechaMostrada = sesiones[0].fecha;

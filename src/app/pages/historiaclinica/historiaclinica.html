@@ -58,6 +58,12 @@
         </div>
 
         <div>
+          <span>DNI</span>
+          <p *ngIf="!editar">{{ paciente.nacimiento }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.nacimiento">
+        </div>
+
+        <div>
           <span>Teléfono</span>
           <p *ngIf="!editar">{{ paciente.telefono }}</p>
           <input *ngIf="editar" [(ngModel)]="paciente.telefono">
@@ -67,6 +73,12 @@
           <span>Dirección</span>
           <p *ngIf="!editar">{{ paciente.direccion }}</p>
           <input *ngIf="editar" [(ngModel)]="paciente.direccion">
+        </div>
+
+        <div>
+          <span>Nacionalidad</span>
+          <p *ngIf="!editar">{{ paciente.nacionalidad }}</p>
+          <input *ngIf="editar" [(ngModel)]="paciente.nacionalidad">
         </div>
 
       </div>
@@ -120,7 +132,30 @@
             <td>{{ sesion.numero_sesion }}°</td>
             <td>{{ sesion.fecha | date:'dd/MM/yyyy' }}</td>
             <td>{{ sesion.fecha | date:'HH:mm' }}</td>
-            <td>{{ sesion.estado === 1 ? 'Registrada' : 'Pendiente' }}</td>
+            <td>
+              <div class="hc-estado-cell">
+                <select
+                  class="hc-estado-select"
+                  [(ngModel)]="sesion.estado"
+                  [disabled]="sesionEditando !== sesion.id">
+                  <option [ngValue]="1">Registrada</option>
+                  <option [ngValue]="2">Completada</option>
+                  <option [ngValue]="3">Cancelada</option>
+                </select>
+                <button
+                  class="hc-estado-btn"
+                  *ngIf="sesionEditando === sesion.id"
+                  (click)="guardarEstadoSesion(sesion)">
+                  Guardar
+                </button>
+                <button
+                  class="hc-estado-edit"
+                  *ngIf="sesionEditando !== sesion.id"
+                  (click)="editarEstadoSesion(sesion)">
+                  ✎
+                </button>
+              </div>
+            </td>
           </tr>
 
           <!-- CUANDO NO TIENE SESIONES -->
@@ -171,7 +206,9 @@
     <app-modal-hc
       *ngIf="hcSeleccionada"
       [hc]="hcSeleccionada"
-      (cerrar)="cerrarModal()">
+      [pacienteId]="paciente!.id!"
+      (cerrar)="cerrarModal()"
+      (actualizado)="onHcActualizado()">
     </app-modal-hc>
 
   </div>

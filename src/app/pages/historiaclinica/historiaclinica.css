@@ -342,6 +342,63 @@
   flex: 0 0 auto;
 }
 
+.hc-estado-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hc-estado-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1e293b;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+
+.hc-estado-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.hc-estado-btn {
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hc-estado-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
+}
+
+.hc-estado-edit {
+  padding: 4px 10px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.hc-estado-edit:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
 @media (max-width: 640px) {
   .historyclinical { padding: 20px; margin-left: 0; }
   .hc-card { padding: 20px; }

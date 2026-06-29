@@ -45,5 +45,20 @@ export class SupabaseService {
     if (error) throw error;
     return data;
   }
+
+  async eliminarArchivo(url: string): Promise<void> {
+    // Extraer la ruta del archivo desde la URL publica
+    // URL tipica: https://dvjkxquflyyzfptlnpwx.supabase.co/storage/v1/object/public/historias-clinicas/paciente_123/1234567890.pdf
+    const baseUrl = `https://dvjkxquflyyzfptlnpwx.supabase.co/storage/v1/object/public/${this.bucketStorage}/`;
+    const filePath = url.replace(baseUrl, '');
+
+    if (filePath && filePath !== url) {
+      const { error } = await this.supabase.storage
+        .from(this.bucketStorage)
+        .remove([filePath]);
+
+      if (error) throw error;
+    }
+  }
   
 }

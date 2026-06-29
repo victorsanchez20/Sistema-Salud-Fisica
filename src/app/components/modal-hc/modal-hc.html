@@ -1,65 +1,128 @@
 <div class="modal-overlay" (click)="onOverlayClick($event)">
   <div class="modal-container">
 
-    <!-- Header -->
     <div class="modal-header">
       <div class="modal-header-info">
         <span class="modal-especialidad">{{ hc.especialidad }}</span>
         <span class="modal-fecha">{{ hc.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</span>
       </div>
-      <button class="modal-close" (click)="cerrar.emit()">✕</button>
+      <div class="modal-header-actions">
+        <button *ngIf="!editando" class="btn-edit-hc" (click)="iniciarEdicion()">Editar</button>
+        <button class="modal-close" (click)="cerrar.emit()">✕</button>
+      </div>
     </div>
 
-    <!-- Body -->
     <div class="modal-body">
 
       <!-- Columna izquierda: info -->
       <div class="modal-info">
-        <div class="modal-field">
-          <label>Responsable</label>
-          <p>{{ hc.responsable }}</p>
-        </div>
-        <div class="modal-field">
-          <label>Especialidad</label>
-          <p>{{ hc.especialidad }}</p>
-        </div>
-        <div class="modal-field">
-          <label>Descripción</label>
-          <p>{{ hc.descripcion }}</p>
-        </div>
+        <!-- MODO VISTA -->
+        <ng-container *ngIf="!editando">
+          <div class="modal-field">
+            <label>Responsable</label>
+            <p>{{ hc.responsable }}</p>
+          </div>
+          <div class="modal-field">
+            <label>Especialidad</label>
+            <p>{{ hc.especialidad }}</p>
+          </div>
+          <div class="modal-field">
+            <label>Descripción</label>
+            <p>{{ hc.descripcion }}</p>
+          </div>
 
-        <!-- Lista de archivos -->
-        <div class="modal-field" *ngIf="hc.archivos.length > 0">
-          <label>Documentos adjuntos</label>
-          <div class="modal-archivos-lista">
-            <div
-              *ngFor="let archivo of hc.archivos"
-              class="modal-archivo-item"
-              [class.activo]="archivoActivo === archivo"
-              (click)="seleccionarArchivo(archivo)">
-              <span class="archivo-icono">{{ esPDF(archivo.url) ? '📄' : '🖼️' }}</span>
-              <div>
-                <p class="archivo-nombre">{{ archivo.nombreOriginal }}</p>
-                <span class="archivo-categoria">{{ archivo.categoria }}</span>
+          <div class="modal-field" *ngIf="hc.archivos.length > 0">
+            <label>Documentos adjuntos</label>
+            <div class="modal-archivos-lista">
+              <div
+                *ngFor="let archivo of hc.archivos"
+                class="modal-archivo-item"
+                [class.activo]="archivoActivo === archivo"
+                (click)="seleccionarArchivo(archivo)">
+                <span class="archivo-icono">{{ esPDF(archivo.url) ? '📄' : '🖼️' }}</span>
+                <div>
+                  <p class="archivo-nombre">{{ archivo.nombreOriginal }}</p>
+                  <span class="archivo-categoria">{{ archivo.categoria }}</span>
+                </div>
+                <button class="btn-remove-file" (click)="eliminarArchivoPerma(archivo); $event.stopPropagation()" title="Eliminar archivo">🗑️</button>
               </div>
             </div>
+            <div class="edit-acciones">
+              <label class="btn-add-file" [class.disabled]="subiendo">
+                {{ subiendo ? 'Subiendo...' : '+ Agregar documento' }}
+                <input type="file" (change)="agregarArchivo($event)" hidden [disabled]="subiendo" />
+              </label>
+            </div>
           </div>
-        </div>
 
-        <div class="modal-field" *ngIf="!hc.archivos || hc.archivos.length === 0">
-          <label>Documentos adjuntos</label>
-          <p style="color: #94a3b8;">Sin documentos adjuntos</p>
-        </div>
+          <div class="modal-field" *ngIf="!hc.archivos || hc.archivos.length === 0">
+            <label>Documentos adjuntos</label>
+            <p style="color: #94a3b8;">Sin documentos adjuntos</p>
+          </div>
+        </ng-container>
+
+        <!-- MODO EDICION -->
+        <ng-container *ngIf="editando">
+          <div class="modal-field">
+            <label>Responsable</label>
+            <input class="edit-input" [(ngModel)]="editResponsable" />
+          </div>
+          <div class="modal-field">
+            <label>Especialidad</label>
+            <input class="edit-input" [(ngModel)]="editEspecialidad" />
+          </div>
+          <div class="modal-field">
+            <label>Descripción</label>
+            <textarea class="edit-textarea" rows="4" [(ngModel)]="editDescripcion"></textarea>
+          </div>
+
+          <div class="modal-field">
+            <label>Documentos adjuntos</label>
+            <div class="modal-archivos-lista">
+              <div
+                *ngFor="let archivo of editArchivos"
+                class="modal-archivo-item edit-archivo-item"
+                [class.activo]="archivoActivo === archivo"
+                (click)="seleccionarArchivo(archivo)">
+                <span class="archivo-icono">{{ esPDF(archivo.url) ? '📄' : '🖼️' }}</span>
+                <div>
+                  <p class="archivo-nombre">{{ archivo.nombreOriginal }}</p>
+                  <span class="archivo-categoria">{{ archivo.categoria }}</span>
+                </div>
+                <button class="btn-remove-file" (click)="eliminarArchivo(archivo); $event.stopPropagation()" title="Eliminar">✕</button>
+              </div>
+            </div>
+            <div class="edit-acciones">
+              <label class="btn-add-file" [class.disabled]="subiendo">
+                {{ subiendo ? 'Subiendo...' : '+ Agregar documento' }}
+                <input type="file" (change)="onFileSelected($event)" hidden [disabled]="subiendo" />
+              </label>
+            </div>
+          </div>
+
+          <div class="edit-botones">
+            <button class="btn-cancel" (click)="cancelarEdicion()">Cancelar</button>
+            <button class="btn-save-hc" (click)="guardarEdicion()" [disabled]="subiendo">
+              {{ subiendo ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+          </div>
+        </ng-container>
+
       </div>
 
       <!-- Columna derecha: preview -->
       <div class="modal-preview">
         <ng-container *ngIf="archivoActivo; else sinArchivo">
           <img
-            *ngIf="esImagen(archivoActivo.url)"
+            *ngIf="esImagen(archivoActivo.url) && !editando"
             [src]="archivoActivo.url"
             alt="Vista previa"
             class="preview-img" />
+          <img
+            *ngIf="esImagen(archivoActivo.url) && editando"
+            [src]="archivoActivo.url"
+            alt="Vista previa"
+            class="preview-img preview-edit" />
           <iframe
             *ngIf="esPDF(archivoActivo.url)"
             [src]="obtenerUrlSegura(archivoActivo.url)"

@@ -40,7 +40,7 @@ export class Pacientes implements OnInit {
       next: (data) => {
         const pacientesConvertidos = data.map(p => ({
           ...p,
-          nacimiento: new Date(p.nacimiento)
+          nacimiento: p.nacimiento ? new Date(p.nacimiento) : null
         }));
 
         this.pacientesOriginal = pacientesConvertidos;
@@ -97,11 +97,20 @@ export class Pacientes implements OnInit {
     this.router.navigate(['/historiaclinica', hc]);
   }
 
-  calcularEdad(fecha: Date): number {
+  calcularEdad(fecha: Date | string | null): number | string {
+    if (!fecha) {
+      return '-';
+    }
+
+    const fechaNacimiento = typeof fecha === 'string' ? new Date(fecha) : fecha;
+    if (!(fechaNacimiento instanceof Date) || isNaN(fechaNacimiento.getTime())) {
+      return '-';
+    }
+
     const hoy = new Date();
-    let edad = hoy.getFullYear() - fecha.getFullYear();
-    const m = hoy.getMonth() - fecha.getMonth();
-    if (m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) {
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const m = hoy.getMonth() - fechaNacimiento.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
       edad--;
     }
     return edad;

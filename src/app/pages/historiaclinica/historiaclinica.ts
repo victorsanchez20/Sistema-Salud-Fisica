@@ -25,6 +25,7 @@ export class Historiaclinica implements OnInit {
   open = false;
   openIndex: number | null = null;
   editar = false;
+  sesionEditando: number | null = null;
 
   historiasClinicas: HistoriaClinicaResponse[] = [];
   hcSeleccionada: HistoriaClinicaResponse | null = null;
@@ -52,7 +53,7 @@ export class Historiaclinica implements OnInit {
       next: (data) => {
         this.paciente = {
           ...data,
-          nacimiento: new Date(data.nacimiento!)
+          nacimiento: data.nacimiento
         };
         this.cdr.detectChanges();
         console.log("PERSONA: " + this.paciente.id);
@@ -83,6 +84,12 @@ export class Historiaclinica implements OnInit {
 
   cerrarModal() {
     this.hcSeleccionada = null;
+  }
+
+  onHcActualizado() {
+    if (this.paciente?.id) {
+      this.cargarHistoriasClinicas(this.paciente.id);
+    }
   }
 
   cargarCitas(idPaciente: number) {
@@ -152,7 +159,7 @@ export class Historiaclinica implements OnInit {
         next: (data) => {
           this.paciente = {
             ...data,
-            nacimiento: new Date(data.nacimiento!)
+            nacimiento: data.nacimiento
           };
           this.editar = false;
           this.cdr.detectChanges();
@@ -163,6 +170,22 @@ export class Historiaclinica implements OnInit {
           alert('Error al actualizar paciente');
         }
       });
+  }
+
+  editarEstadoSesion(sesion: any) {
+    this.sesionEditando = sesion.id;
+  }
+
+  guardarEstadoSesion(sesion: any) {
+    this.sesionService.actualizarEstado(sesion.id, sesion.estado).subscribe({
+      next: () => {
+        this.sesionEditando = null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado:', err);
+      }
+    });
   }
 
   eliminarPaciente() {

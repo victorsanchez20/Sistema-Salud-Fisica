@@ -7,6 +7,6 @@ export interface Paciente {
   hc: string;
   telefono: string;
   direccion: string;
-  nacimiento: Date;   // ⬅️ Date, NO string
+  nacimiento: Date | null;   // ⬅️ Date, NO string
   nacionalidad: string;
 }

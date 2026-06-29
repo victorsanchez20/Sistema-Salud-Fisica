@@ -83,7 +83,7 @@ export class InsertarHc implements OnInit {
     hc: '',
     telefono: '',
     direccion: '',
-    nacimiento: new Date(),
+    nacimiento: null,
     nacionalidad: ''
   };
 
