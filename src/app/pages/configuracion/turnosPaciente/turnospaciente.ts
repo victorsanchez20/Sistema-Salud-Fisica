@@ -4,6 +4,7 @@ import { DoctorService } from '../../../services/doctor.service';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HorarioService } from '../../../services/horario.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-turnospaciente',
@@ -45,7 +46,7 @@ export class Turnospaciente implements OnInit {
     if (!this.nuevaHora) return;
 
     if (this.horasSeleccionadas.includes(this.nuevaHora)) {
-      alert('Esa hora ya está agregada');
+      Swal.fire({ icon: 'warning', title: 'Esa hora ya está agregada' });
       return;
     }
 
@@ -76,7 +77,7 @@ export class Turnospaciente implements OnInit {
 
   guardarHorario() {
     if (!this.horasSeleccionadas.length) {
-      alert('Agregue al menos una hora');
+      Swal.fire({ icon: 'warning', title: 'Agregue al menos una hora' });
       return;
     }
 
@@ -88,9 +89,9 @@ export class Turnospaciente implements OnInit {
     this.horarioService.guardarHorario(payload)
       .subscribe({
         next: () => {
-          alert('Horario guardado correctamente');
-          this.cargarHorasDoctor(); // 🔥 CLAVE
-        },
+            Swal.fire({ icon: 'success', title: 'Horario guardado correctamente', timer: 1400, showConfirmButton: false });
+            this.cargarHorasDoctor(); // 🔥 CLAVE
+          },
         error: err => console.error(err)
       });
   }

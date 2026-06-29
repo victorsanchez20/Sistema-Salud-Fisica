@@ -31,4 +31,8 @@ export class HistorialClinicaService {
     return this.http.get<HistoriaClinicaResponse[]>(
     `${environment.api}/api/historia-clinica/paciente/${pacienteId}`);
   }
+
+  ultimahc() {
+    return this.http.get<number>(`${environment.api}/api/historia-clinica/ultima-hc`);
+  }
 }

@@ -43,11 +43,8 @@ export class Historiaclinica implements OnInit {
       this.hc = params.get('hc')! || '';
       if (this.hc) {
         this.cargarPaciente();
-      }
-      
-    });
-
-    
+      }   
+    });  
   }
 
   cargarPaciente() {
@@ -55,7 +52,7 @@ export class Historiaclinica implements OnInit {
       next: (data) => {
         this.paciente = {
           ...data,
-          nacimiento: new Date(data.nacimiento)
+          nacimiento: new Date(data.nacimiento!)
         };
         this.cdr.detectChanges();
         console.log("PERSONA: " + this.paciente.id);
@@ -155,7 +152,7 @@ export class Historiaclinica implements OnInit {
         next: (data) => {
           this.paciente = {
             ...data,
-            nacimiento: new Date(data.nacimiento)
+            nacimiento: new Date(data.nacimiento!)
           };
           this.editar = false;
           this.cdr.detectChanges();

@@ -11,6 +11,7 @@ import { DisponibilidadDoctorService } from '../../services/disponibilidad-docto
 import { CitaService } from '../../services/cita.service';
 import { HttpClientModule } from '@angular/common/http';
 import { SesionService } from '../../services/sesion.service';
+import Swal from 'sweetalert2';
 
 interface TurnoDia {
   doctorId: number;
@@ -159,17 +160,17 @@ export class Citar {
 
   registrarCita() {
     if (!this.pacienteSeleccionado) {
-      alert('Seleccione un paciente');
+      Swal.fire({ icon: 'warning', title: 'Seleccione un paciente' });
       return;
     }
 
     if (!this.diagnosticoSeleccionado) {
-      alert('Seleccione diagnóstico');
+      Swal.fire({ icon: 'warning', title: 'Seleccione diagnóstico' });
       return;
     }
 
     if (this.sesionesProgramadas.length === 0) {
-      alert('Seleccione al menos una sesión');
+      Swal.fire({ icon: 'warning', title: 'Seleccione al menos una sesión' });
       return;
     }
 
@@ -194,12 +195,12 @@ export class Citar {
     console.log('diagnosticoSeleccionadoObj encontrado:', diagnosticoSeleccionadoObj);
     
     if (!doctorSeleccionado) {
-      alert(`Error: No se encontró el doctor "${this.fisioterapeutaSeleccionado}" en la lista`);
+      Swal.fire({ icon: 'error', title: `Error: No se encontró el doctor "${this.fisioterapeutaSeleccionado}" en la lista` });
       return;
     }
     
     if (!diagnosticoSeleccionadoObj) {
-      alert(`Error: No se encontró el diagnóstico con ID ${this.diagnosticoSeleccionado}`);
+      Swal.fire({ icon: 'error', title: `Error: No se encontró el diagnóstico con ID ${this.diagnosticoSeleccionado}` });
       return;
     }
 
@@ -219,12 +220,12 @@ export class Citar {
     console.log('PAYLOAD FINAL:', payload);
     this.citaService.registrar(payload).subscribe({
       next: () => {
-        alert('✅ Cita y sesiones registradas');
+        Swal.fire({ icon: 'success', title: '✅ Cita y sesiones registradas', timer: 1800, showConfirmButton: false });
         this.resetFormulario();  
       },
       error: err => {
         console.error(err);
-        alert('❌ Error al registrar');
+        Swal.fire({ icon: 'error', title: '❌ Error al registrar' });
       }
       
     });
@@ -325,7 +326,7 @@ export class Citar {
 
   cargarHorario() {
     if (!this.fisioterapeutaSeleccionado) {
-      alert('Seleccione un fisioterapeuta');
+      Swal.fire({ icon: 'warning', title: 'Seleccione un fisioterapeuta' });
       return;
     }
 

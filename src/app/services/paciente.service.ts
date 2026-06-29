@@ -52,5 +52,4 @@ export class PacienteService {
   cantidadPacientePorMes(): Observable<{[key: string]: number}> {
     return this.http.get<{[key: string]: number}>(`${this.APIURL}/cantidad-pacientes-ultimos-meses`);
   }
-
 }

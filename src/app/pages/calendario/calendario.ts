@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { DisponibilidadDTO } from '../../models/disponibilidad.model';
+import Swal from 'sweetalert2';
 import { DisponibilidadDoctorService } from '../../services/disponibilidad-doctor.service';
 import { Doctor } from '../../models/doctor.model';
 import { DoctorService } from '../../services/doctor.service';
@@ -368,7 +369,7 @@ export class Calendario implements OnInit {
     const payload = this.generarDisponibilidadDTO();
 
     this.disponibilidadService.guardarMasivo(payload).subscribe({
-      next: () => alert('✅ Turnos guardados correctamente'),
+      next: () => Swal.fire({ icon: 'success', title: '✅ Turnos guardados correctamente', timer: 2000, showConfirmButton: false }),
       error: err => console.error('❌ Error al guardar', err)
     });
   }
@@ -407,27 +408,31 @@ export class Calendario implements OnInit {
   eliminarCalendario(cal: CalendarioGuardado, event: Event) {
     event.stopPropagation(); // ⛔ no abrir modal
 
-    const confirmar = confirm(
-      `¿Eliminar el calendario de ${this.meses[cal.mes - 1].label} ${cal.anio}?`
-    );
+    Swal.fire({
+      title: `¿Eliminar el calendario de ${this.meses[cal.mes - 1].label} ${cal.anio}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(res => {
+      if (!res.isConfirmed) return;
 
-    if (!confirmar) return;
+      this.disponibilidadService
+        .eliminarCalendario(cal.mes, cal.anio)
+        .subscribe({
+          next: () => {
+            Swal.fire({ icon: 'success', title: '✅ Calendario eliminado', timer: 1500, showConfirmButton: false });
+            this.cargarCalendariosGuardados();
 
-    this.disponibilidadService
-      .eliminarCalendario(cal.mes, cal.anio)
-      .subscribe({
-        next: () => {
-          alert('✅ Calendario eliminado');
-          this.cargarCalendariosGuardados();
-
-          // limpiar vista si era el mismo
-          if (this.mes === cal.mes && this.anio === cal.anio) {
-            this.calendario = [];
-            this.generarCalendario();
-          }
-        },
-        error: err => console.error('❌ Error al eliminar', err)
-      });
+            // limpiar vista si era el mismo
+            if (this.mes === cal.mes && this.anio === cal.anio) {
+              this.calendario = [];
+              this.generarCalendario();
+            }
+          },
+          error: err => console.error('❌ Error al eliminar', err)
+        });
+    });
   }
 
 }

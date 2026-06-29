@@ -44,17 +44,41 @@
 
       <div class="ihc-card">
         <p class="ihc-section-title">Responsable del ingreso</p>
-        <div class="ihc-field">
+        <div class="ihc-field ihc-autocomplete">
           <label>Nombre del profesional</label>
-          <input type="text" [(ngModel)]="responsable" placeholder="Buscar o ingresar nombre del profesional...">
+          <input
+            type="text"
+            [(ngModel)]="responsableSearchText"
+            (input)="filtrarResponsable()"
+            (focus)="filtrarResponsable()"
+            (blur)="cerrarResponsableDropdown()"
+            (keydown.escape)="showResponsableDropdown = false"
+            placeholder="Busque profesional...">
+          <ul class="ihc-autocomplete-list" *ngIf="showResponsableDropdown && responsableFiltrados.length > 0">
+            <li *ngFor="let pro of responsableFiltrados" (mousedown)="seleccionarResponsable(pro)">
+              {{ pro.nombre }}
+            </li>
+          </ul>
         </div>
       </div>
 
       <div class="ihc-card">
-        <p class="ihc-section-title">Especialidad de atención</p>
-        <div class="ihc-field">
-          <label>Nombre de la especialidad</label>
-          <input type="text" [(ngModel)]="especialidad" placeholder="Ingrese la especialidad...">
+        <p class="ihc-section-title">Diagnostico de atención</p>
+        <div class="ihc-field ihc-autocomplete">
+          <label>Nombre del Diagnostico</label>
+          <input 
+            type="text" 
+            [(ngModel)]="especialidad"
+            (input)="filtrarEspecialidad()"
+            (focus)="filtrarEspecialidad()"
+            (blur)="cerrarEspecialidadDropdown()"
+            (keydown.escape)="showEspecialidadDropdown = false"
+            placeholder="Ingrese la especialidad...">
+          <ul class="ihc-autocomplete-list" *ngIf="showEspecialidadDropdown && opcionesFiltradas.length > 0">
+            <li *ngFor="let op of opcionesFiltradas" (mousedown)="seleccionar(op)">
+              {{ op.nombre }}
+            </li>
+          </ul>
         </div>
       </div>
 

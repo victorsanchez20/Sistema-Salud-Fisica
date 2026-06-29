@@ -62,14 +62,6 @@
     </div>
 
     <div class="form-group">
-      <label>Historia Clínica</label>
-      <input type="text" formControlName="hc" placeholder="N° de Historia">
-      <small style="color:red" *ngIf="formControls['hc'].invalid && formControls['hc'].touched">
-        <span *ngIf="formControls['hc'].errors?.['pattern']">La historia clínica solo puede contener letras, números y guiones.</span>
-      </small>
-    </div>
-
-    <div class="form-group">
       <label>Fecha de Nacimiento</label>
       <input type="date" formControlName="nacimiento">
     </div>

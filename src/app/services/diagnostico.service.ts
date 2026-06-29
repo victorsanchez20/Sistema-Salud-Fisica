@@ -28,4 +28,8 @@ export class DiagnosticoService {
   eliminar(id: number) {
     return this.http.delete<Diagnostico[]>(`${this.APIURL}/${id}`)
   }
+
+  totalDiagnostico() {
+    return this.http.get<number>(`${this.APIURL}/total-diagnostico`);
+  }
 }

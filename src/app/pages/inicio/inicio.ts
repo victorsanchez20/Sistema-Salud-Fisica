@@ -6,14 +6,16 @@ import { PacienteService } from '../../services/paciente.service';
 import { count, forkJoin, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DoctorService } from '../../services/doctor.service';
+import { DisponibilidadDoctorService } from '../../services/disponibilidad-doctor.service';
+import { HistorialClinicaService } from '../../services/historial-clinica.service';
+import { DiagnosticoService } from '../../services/diagnostico.service';
 
 interface Metricas {
   pacientes: number;
-  historiasClinicas: number;
+  hc: number;
   citas: number;
   terapias: number;
-  usuarios: number;
-  citasCompletadas: number;
+  diagnostico: number;
 }
 
 interface CitaMes {
@@ -31,7 +33,7 @@ interface PacienteMes {
 interface ActividadDia {
   dia: string;
   turnos: number;
-  altura: string;
+  altura: number;
 }
 
 interface EstadoCitas {
@@ -58,38 +60,30 @@ export class Inicio implements OnInit {
 
   metricas: Metricas = {
     pacientes: 0,
-    historiasClinicas: 1189,
-    citas: 3420,
+    hc: 0,
+    citas: 0,
     terapias: 0,
-    usuarios: 48,
-    citasCompletadas: 3156
+    diagnostico: 0
   };
 
   citasPorMes: CitaMes[] = [
-    { mes: 'Ene', citas: 280, altura: '85%' },
-    { mes: 'Feb', citas: 245, altura: '75%' },
-    { mes: 'Mar', citas: 310, altura: '95%' },
-    { mes: 'Abr', citas: 265, altura: '80%' },
-    { mes: 'May', citas: 290, altura: '88%' },
-    { mes: 'Jun', citas: 320, altura: '98%' },
+    { mes: 'Ene', citas: 0, altura: '%' },
+    { mes: 'Feb', citas: 0, altura: '%' },
+    { mes: 'Mar', citas: 0, altura: '%' },
+    { mes: 'Abr', citas: 0, altura: '%' },
+    { mes: 'May', citas: 0, altura: '%' },
+    { mes: 'Jun', citas: 0, altura: '%' },
   ];
 
   pacientesPorMes: PacienteMes[] = [];
 
-  actividadSemanal: ActividadDia[] = [
-    { dia: 'Lun', turnos: 42, altura: '90%' },
-    { dia: 'Mar', turnos: 38, altura: '82%' },
-    { dia: 'Mié', turnos: 45, altura: '96%' },
-    { dia: 'Jue', turnos: 35, altura: '75%' },
-    { dia: 'Vie', turnos: 28, altura: '60%' },
-    { dia: 'Sáb', turnos: 12, altura: '26%' },
-  ];
+  actividadSemanal: ActividadDia[] = [];
 
   estadoCitas: EstadoCitas = {
-    total: 285,
-    completadas: 198,
-    pendientes: 72,
-    canceladas: 15
+    total: 0,
+    completadas: 0,
+    pendientes: 0,
+    canceladas: 0
   };
 
   get donutGradient(): string {
@@ -108,7 +102,10 @@ export class Inicio implements OnInit {
     private sesionService: SesionService, 
     private cdr: ChangeDetectorRef,
     private pacienteService: PacienteService,
-    private doctorService: DoctorService
+    private doctorService: DoctorService,
+    private disponibilidadService: DisponibilidadDoctorService,
+    private historialClinicaService: HistorialClinicaService,
+    private diagnosticoService: DiagnosticoService
   ) {}
 
   ngOnInit(): void {
@@ -117,15 +114,25 @@ export class Inicio implements OnInit {
       totalPacientes: this.pacienteService.cantidadPaciente(),
       totalDoctores: this.doctorService.leer().pipe(map(doctores => doctores.length)),
       pacientesPorMes: this.pacienteService.cantidadPacientePorMes(),
+      totalDisponibilidad: this.disponibilidadService.cantidadDisponibilidad(),
+      hcmayor: this.historialClinicaService.ultimahc(),
+      totalDiagnostico: this.diagnosticoService.totalDiagnostico(),
+      citasPorFecha: this.disponibilidadService.cantidadDisponibilidadPorFecha()
     }).pipe(
       takeUntilDestroyed(this.destroyedRef)
 
     ).subscribe({
-      next: ({sesiones, totalPacientes, totalDoctores, pacientesPorMes}) => {
+      next: ({sesiones, totalPacientes, totalDoctores, pacientesPorMes, totalDisponibilidad, hcmayor,
+          totalDiagnostico, citasPorFecha
+      }) => {
         this.metricas.pacientes = totalPacientes;
         this.metricas.terapias = totalDoctores;
         this.sesiones = sesiones;
         this.buildChartData(pacientesPorMes);
+        this.metricas.citas = totalDisponibilidad;
+        this.metricas.hc = hcmayor;
+        this.metricas.diagnostico = totalDiagnostico;
+        this.buildChartCitas(citasPorFecha);
 
         if (sesiones.length) {
             this.fechaMostrada = sesiones[0].fecha;
@@ -172,5 +179,20 @@ export class Inicio implements OnInit {
         altura
       };
     });
+  }
+
+  buildChartCitas(data: { [fecha: string]: number }): void {
+    const fechasOrdenadas = Object.entries(data)
+      .map(([fecha, turnos]) => ({ fecha, turnos, fechaObj: new Date(fecha) }))
+      .sort((a, b) => a.fechaObj.getTime() - b.fechaObj.getTime())
+      .slice(-16);
+
+    const maxVal = Math.max(...fechasOrdenadas.map(item => item.turnos), 1);
+
+    this.actividadSemanal = fechasOrdenadas.map(({ fecha, turnos }) => ({
+      dia: fecha,
+      turnos,
+      altura: Math.round((turnos / maxVal) * 90)  // 140px máximo
+    }));
   }
 }

@@ -6,7 +6,27 @@
     </div>
 
     <div class="busqueda-card">
-      <label for="dni">Buscar por DNI</label>
+
+      <label for="tipodoc">Tipo de documento</label>
+      <div class="input-row">
+        <!--
+        <input
+          id="tipodoc"
+          name="tipodoc"
+          type="text"
+          [(ngModel)]="tipodoc"
+          placeholder="1"
+          maxlength="2"
+        />-->
+        <select class="select-input" [(ngModel)]="tipodoc">
+          <option value="" disabled selected>Seleccione documento...</option>
+          <option value="1">DNI</option>
+          <option value="2">Carnet de Extranjeria</option>
+          <option value="3">Pasaporte</option>
+          <option value="4">División de Intervenciones Especiales DIE</option>
+        </select>
+      </div>
+      <label for="dni">Número de documento</label>
       <div class="input-row">
         <input
           id="dni"
@@ -14,13 +34,13 @@
           type="text"
           [(ngModel)]="dni"
           placeholder="10376656"
-          maxlength="8"
+          maxlength="12"
         />
         <button type="button" class="btn-primary" (click)="buscarReferencias()">
           Buscar
         </button>
       </div>
-      <p class="texto-ayuda">La consulta se realiza contra el endpoint <code>/referencias?dni=</code>.</p>
+      <p class="texto-ayuda">La consulta se realiza con <code>idtipodoc</code> y <code>numdoc</code> dinámicos.</p>
       <p class="error" *ngIf="error">{{ error }}</p>
     </div>
   </div>

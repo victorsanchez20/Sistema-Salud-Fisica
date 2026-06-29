@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Turno } from '../../models/turno.model';
 import { TurnoService } from '../../services/turno.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-configuracion',
@@ -70,6 +71,7 @@ export class Configuracion implements OnInit {
 
     if(this.doctorForm.invalid) {
       this.doctorForm.markAllAsTouched();
+      this.cdr.detectChanges();
       return;
     }
 
@@ -79,24 +81,23 @@ export class Configuracion implements OnInit {
     if (this.editandoDoctor) {
       this.doctorService.actualizar(this.editandoDoctor.id!, doctor)
         .subscribe(() => {
-          alert('Doctor actualizado');
-          this.cargarDoctores();
-          this.closeTerapistaModal();
-          this.doctorForm.reset();
-          this.editandoDoctor = null;
-        });
-      return;
+            Swal.fire({ icon: 'success', title: 'Doctor actualizado', timer: 1200, showConfirmButton: false });
+            this.cargarDoctores();
+            this.closeTerapistaModal();
+            this.doctorForm.reset();
+            this.editandoDoctor = null;
+          });
     }
 
     // Crear 
     this.doctorService.crear(doctor).subscribe({
       next: () => {
-        alert('Doctor registrado correctamente');
+        Swal.fire({ icon: 'success', title: 'Doctor registrado correctamente', timer: 1200, showConfirmButton: false });
         this.doctorForm.reset();
       },
       error: (err) => {
         console.error(err);
-        alert('Error al registrar doctor');
+        Swal.fire({ icon: 'error', title: 'Error al registrar doctor' });
       }
     })
   }
@@ -115,24 +116,24 @@ export class Configuracion implements OnInit {
     if (this.editandoDiagnostico) {
       this.diagnosticoService.actualizar(this.editandoDiagnostico.id!, diagnostico)
         .subscribe(() => {
-          alert('Diagnostico actualizado');
+          Swal.fire({ icon: 'success', title: 'Diagnostico actualizado', timer: 1200, showConfirmButton: false });
           this.cargarDiagnosticos();
           this.closeDiagnosticoModal();
           this.diagnosticoForm.reset();
           this.editandoDiagnostico = null;
+          this.cdr.detectChanges();
         });
-      return;
     }
 
     // Crear
     this.diagnosticoService.crear(diagnostico).subscribe({
       next: () => {
-        alert('Diagnostico registrado correctamente');
+        Swal.fire({ icon: 'success', title: 'Diagnostico registrado correctamente', timer: 1200, showConfirmButton: false });
         this.diagnosticoForm.reset();
       },
       error: (err) => {
         console.error(err);
-        alert('Error al registrar diagnostico');
+        Swal.fire({ icon: 'error', title: 'Error al registrar diagnostico' });
       }
     })
   }
@@ -149,13 +150,13 @@ export class Configuracion implements OnInit {
     if (this.editandoTurno) {
       this.turnoService.actualizar(this.editandoTurno.id!, turno)
         .subscribe(() => {
-          alert('Turno actualizado');
-          this.cargarTurno();
-          this.closeTurnoModal();
-          this.turnoForm.reset();
-          this.editandoTurno = null;
-        });
-      return;
+            Swal.fire({ icon: 'success', title: 'Turno actualizado', timer: 1200, showConfirmButton: false });
+            this.cargarTurno();
+            this.closeTurnoModal();
+            this.turnoForm.reset();
+            this.editandoTurno = null;
+            this.cdr.detectChanges();
+          });
     }
 
     // Crear
@@ -229,52 +230,70 @@ export class Configuracion implements OnInit {
 
   /* ELIMINAR DATOS */
   eliminarDoctor(id: number) {
-    if(!confirm('¿Seguro que deseas eliminar este terapista?')) {
-      return;
-    }
+    Swal.fire({
+      title: '¿Seguro que deseas eliminar este terapista?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(r => {
+      if (!r.isConfirmed) return;
 
-    this.doctorService.eliminar(id).subscribe({
-      next: () => {
-        alert('Terapista eliminado.');
-        this.cargarDoctores();
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Error al eliminar.');
-      }
+      this.doctorService.eliminar(id).subscribe({
+        next: () => {
+          Swal.fire({ icon: 'success', title: 'Terapista eliminado.', timer: 1200, showConfirmButton: false });
+          this.cargarDoctores();
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire({ icon: 'error', title: 'Error al eliminar.' });
+        }
+      });
     });
   }
   eliminarDiagnostico(id: number) {
-    if(!confirm('¿Seguro que deseas eliminar este tipo de diagnostico?')) {
-      return;
-    }
+    Swal.fire({
+      title: '¿Seguro que deseas eliminar este tipo de diagnostico?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(r => {
+      if (!r.isConfirmed) return;
 
-    this.diagnosticoService.eliminar(id).subscribe({
-      next: () => {
-        alert('Diagnostico eliminado.');
-        this.cargarDiagnosticos();
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Error al eliminar.');
-      }
+      this.diagnosticoService.eliminar(id).subscribe({
+        next: () => {
+          Swal.fire({ icon: 'success', title: 'Diagnostico eliminado.', timer: 1200, showConfirmButton: false });
+          this.cargarDiagnosticos();
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire({ icon: 'error', title: 'Error al eliminar.' });
+        }
+      });
     });
   }
   eliminarTurno(id: number) {
-    if(!confirm('¿Seguro que deseas eliminar este turno?')) {
-      return;
-    }
+    Swal.fire({
+      title: '¿Seguro que deseas eliminar este turno?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(r => {
+      if (!r.isConfirmed) return;
 
-    this.turnoService.eliminar(id).subscribe({
-      next: () => {
-        alert('Turno eliminado.');
-        this.cargarTurno();
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Error al eliminar.');
-      }
-    })
+      this.turnoService.eliminar(id).subscribe({
+        next: () => {
+          Swal.fire({ icon: 'success', title: 'Turno eliminado.', timer: 1200, showConfirmButton: false });
+          this.cargarTurno();
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire({ icon: 'error', title: 'Error al eliminar.' });
+        }
+      })
+    });
   }
 
   /* EDITAR DATOS */

@@ -4,6 +4,7 @@ import { DisponibilidadDTO } from '../models/disponibilidad.model';
 import { CalendarioGuardado } from '../models/calendarioGuardado.model';
 import { DisponibilidadView } from '../models/disponivilidadView.model';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -45,5 +46,13 @@ export class DisponibilidadDoctorService {
     );
   }
 
+
+  cantidadDisponibilidad(): Observable<number> {
+    return this.http.get<number>(`${this.APIURL}/cantidad-disponibilidad`);
+  }
+
+  cantidadDisponibilidadPorFecha() {
+    return this.http.get<{ [fecha: string]: number }>(`${this.APIURL}/cantidad-por-fecha`);
+  }
 
 }

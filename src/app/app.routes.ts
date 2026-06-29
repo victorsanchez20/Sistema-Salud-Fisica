@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
-import { Aside } from './layout/aside/aside';
 import { Pacientes } from './pages/pacientes/pacientes';
-import { App } from './app';
 import { Layout } from './layout/layout/layout';
 import { Nuevopaciente } from './pages/nuevopaciente/nuevopaciente';
 import { Historiaclinica } from './pages/historiaclinica/historiaclinica';
@@ -12,11 +10,25 @@ import { Turnospaciente } from './pages/configuracion/turnosPaciente/turnospacie
 import { Inicio } from './pages/inicio/inicio';
 import { InsertarHc } from './pages/insertar-hc/insertar-hc';
 import { Referencias } from './pages/referencias/referencias';
+import { Login } from './pages/login/login';
+import { AuthGuard } from './guards/auth.guard';
+import { LoginGuard } from './guards/login.guard';
 
 export const routes: Routes = [
     {
+        path: 'login',
+        component: Login,
+        canActivate: [LoginGuard],
+    },
+    {
+        path: '',
+        redirectTo: '/login',
+        pathMatch: 'full',
+    },
+    {
         path: '',
         component: Layout,
+        canActivate: [AuthGuard],
         children: [
             { path: 'home', component: Inicio},
             { path: 'listapacientes', component: Pacientes},

@@ -1,0 +1,81 @@
+<div class="login-wrapper">
+  <div class="login-decoration">
+    <div class="decoration-content">
+      <div class="decoration-icon">🏥</div>
+      <h2>Gestión Integral</h2>
+      <p>Administra pacientes, historias clínicas, citas en un solo lugar.</p>
+      <div class="decoration-features">
+        <div class="feature-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Gestión de Pacientes</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-notes-medical"></i>
+          <span>Historias Clínicas</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Control de Citas</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Reportes y Métricas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-icon">🏥</div>
+      <h1>SistemaSalud</h1>
+      <p class="brand-subtitle">Medicina Física y Rehabilitación</p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="ingresar()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="usuario">Usuario</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-user"></i>
+          <input
+            id="usuario"
+            type="text"
+            [(ngModel)]="usuario"
+            name="usuario"
+            placeholder="Ingrese su usuario"
+            autocomplete="username"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock"></i>
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Ingrese su contraseña"
+            autocomplete="current-password"
+          />
+        </div>
+      </div>
+
+      <div class="error-msg" *ngIf="error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        {{ error }}
+      </div>
+
+      <button type="submit" class="btn-ingresar" [disabled]="cargando">
+        <span>{{ cargando ? 'Ingresando...' : 'Ingresar' }}</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+
+    </form>
+
+    <p class="login-footer">
+      Sistema de Gestión Médica &mdash; v1.0
+    </p>
+  </div>
+</div>

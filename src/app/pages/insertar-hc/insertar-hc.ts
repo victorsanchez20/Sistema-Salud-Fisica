@@ -7,6 +7,11 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { SupabaseService } from '../../services/supabase.service';
 import { environment } from '../../../environments/environment';
+import Swal from 'sweetalert2';
+import { DoctorService } from '../../services/doctor.service';
+import { Doctor } from '../../models/doctor.model';
+import { DiagnosticoService } from '../../services/diagnostico.service';
+import { Diagnostico } from '../../models/diagnostico.model';
 
 interface Documento {
   id: number;
@@ -33,7 +38,20 @@ export class InsertarHc implements OnInit {
   subiendo = false;
   urlsSubidad: string[] = [];
 
+  //busqueda de diagnostico
+  textoBusqueda= '';
+  opcionesFiltradas: Diagnostico[] = [];
+  allDiagnosticos: Diagnostico[] = [];
+  showEspecialidadDropdown = false;
+
+  // autocomplete responsable
+  responsableSearchText = '';
+  responsableFiltrados: Doctor[] = [];
+  showResponsableDropdown = false;
+
   ngOnInit(): void {
+    this.cargarDoctores();
+    this.cargarDiagnosticos();
   }
 
   ngOnDestroy() {
@@ -48,6 +66,8 @@ export class InsertarHc implements OnInit {
   constructor(
     private pacienteService: PacienteService,
     private supabaseService: SupabaseService,
+    private doctorService: DoctorService,
+    private diagnosticoService: DiagnosticoService,
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     private http: HttpClient
@@ -68,7 +88,8 @@ export class InsertarHc implements OnInit {
   };
 
   // Data del html
-  responsable = '';
+  responsable: Doctor[] = [];
+  selectedResponsableId: number | null = null;
   especialidad = '';
   descripcion = '';
 
@@ -86,7 +107,6 @@ export class InsertarHc implements OnInit {
 
   limpiar() {
     this.paciente = { id: undefined, apaterno: '', amaterno: '', nombre: '', dni: '', hc: '', telefono: '', direccion: '', nacimiento: new Date(), nacionalidad: '' };
-    this.responsable = '';
     this.especialidad = '';
     this.descripcion = '';
   }
@@ -95,7 +115,7 @@ export class InsertarHc implements OnInit {
 
     // Validator
     if (!this.paciente.id) {
-      alert('Debe buscar un paciente primero');
+      Swal.fire({ icon: 'warning', title: 'Debe buscar un paciente primero' });
       return;
     }
 
@@ -103,6 +123,19 @@ export class InsertarHc implements OnInit {
     this.urlsSubidad = [];
 
     try {
+      // Verificar que se haya seleccionado un responsable
+      const selected = this.responsable.find(r => r.id === this.selectedResponsableId);
+      if (!selected) {
+        Swal.fire({ icon: 'warning', title: 'Seleccione un responsable' });
+        this.subiendo = false;
+        return;
+      }
+
+      // Construir nombre de responsable en texto plano
+      const responsableNombre = (selected as any).nombre
+        ? (selected as any).nombre
+        : `${(selected as any).apaterno ?? ''} ${(selected as any).amaterno ?? ''} ${(selected as any).nombre ?? ''}`.trim();
+
       //1. Subir cada archivo a supabase
       for (const doc of this.documentos) {
         const url = await this.supabaseService.subirArchivo(doc.archivo, this.paciente.id!);
@@ -112,7 +145,7 @@ export class InsertarHc implements OnInit {
       // 2. Enviar datos + URLs al backend spring boot
       const payload = {
         pacienteId: this.paciente.id,
-        responsable: this.responsable,
+        responsable: responsableNombre,
         especialidad: this.especialidad,
         descripcion: this.descripcion,
         archivos: this.documentos.map((doc, i) => ({
@@ -122,12 +155,13 @@ export class InsertarHc implements OnInit {
           categoria: this.docTipo
         }))
       };
+      console.log(payload);
 
       await this.http.post(`${environment.api}/api/historia-clinica`, payload, {
         responseType: 'text'
       }).toPromise();
 
-      alert('Historia clinica guardada correctamente');
+      Swal.fire({ icon: 'success', title: 'Historia clinica guardada correctamente', timer: 1400, showConfirmButton: false });
       this.limpiar();
       this.documentos = [];
       this.paginaActual = 1;
@@ -135,7 +169,7 @@ export class InsertarHc implements OnInit {
 
     } catch (error) {
       console.error('Error al guardar:', error);
-      alert('Ocurrió un error al guardar. Revisa la consola.');
+      Swal.fire({ icon: 'error', title: 'Ocurrió un error al guardar. Revisa la consola.' });
     } finally {
       this.subiendo = false;
     }
@@ -188,7 +222,7 @@ export class InsertarHc implements OnInit {
         console.log('📦 Respuesta del servidor:', data);
         this.paciente = {
           ...data,
-          nacimiento: new Date(data.nacimiento)
+          nacimiento: data.nacimiento
         };
         this.cd.detectChanges();
         console.log('✅ Paciente encontrado:', data.amaterno, data.apaterno, data.nombre + ' - DNI: ' + data.dni);
@@ -231,5 +265,69 @@ export class InsertarHc implements OnInit {
       return this.documentos[this.docSeleccionado];
     }
     return null;
+  }
+
+
+  cargarDoctores() {
+    this.doctorService.leer().subscribe({
+      next: (data) => {
+        this.responsable = data.map(d => ({
+          ...d,
+        }));
+        this.responsableFiltrados = [...this.responsable];
+        this.cd.detectChanges();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  cargarDiagnosticos() {
+    this.diagnosticoService.leer().subscribe({
+      next: (data) => {
+        this.allDiagnosticos = data.map(d => ({ ...d }));
+        this.cd.detectChanges();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  filtrarResponsable() {
+    const term = this.responsableSearchText.toLowerCase().trim();
+    this.responsableFiltrados = this.responsable.filter(d =>
+      d.nombre.toLowerCase().includes(term)
+    );
+    this.showResponsableDropdown = this.responsableFiltrados.length > 0;
+  }
+
+  seleccionarResponsable(doc: Doctor) {
+    this.responsableSearchText = doc.nombre;
+    this.selectedResponsableId = doc.id ?? null;
+    this.showResponsableDropdown = false;
+  }
+
+  cerrarResponsableDropdown() {
+    setTimeout(() => {
+      this.showResponsableDropdown = false;
+    }, 200);
+  }
+
+  filtrarEspecialidad() {
+    const term = this.especialidad.toLowerCase().trim();
+    this.opcionesFiltradas = this.allDiagnosticos.filter(d =>
+      d.nombre.toLowerCase().includes(term)
+    );
+    this.showEspecialidadDropdown = this.opcionesFiltradas.length > 0;
+  }
+
+  seleccionar(op: Diagnostico) {
+    this.especialidad = op.nombre as string;
+    this.opcionesFiltradas = [];
+    this.showEspecialidadDropdown = false;
+  }
+
+  cerrarEspecialidadDropdown() {
+    setTimeout(() => {
+      this.showEspecialidadDropdown = false;
+    }, 200);
   }
 }

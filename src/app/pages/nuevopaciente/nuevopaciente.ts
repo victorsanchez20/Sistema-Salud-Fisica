@@ -4,6 +4,7 @@ import { Paciente } from '../../models/paciente.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-nuevopaciente',
@@ -25,7 +26,6 @@ export class Nuevopaciente {
       amaterno: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
       nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
-      hc: ['', Validators.pattern('^[A-Za-z0-9\-]{1,20}$')],
       nacimiento: [''],
       nacionalidad: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$')]],
       direccion: ['', [Validators.required, Validators.minLength(5)]],
@@ -51,18 +51,18 @@ export class Nuevopaciente {
 
     this.pacienteService.crear(paciente).subscribe({
       next: () => {
-        alert('Paciente registrado correctamente');
+        Swal.fire({ icon: 'success', title: 'Paciente registrado correctamente', timer: 1400, showConfirmButton: false });
         this.pacienteForm.reset();
       },
       error: (err) => {
 
         if (err.status === 409) {
-          alert(err.error.message);
+          Swal.fire({ icon: 'error', title: err.error.message });
           return;
         }
 
           console.error(err);
-          alert('Error al registrar paciente');
+          Swal.fire({ icon: 'error', title: 'Error al registrar paciente' });
       },
     })
   }

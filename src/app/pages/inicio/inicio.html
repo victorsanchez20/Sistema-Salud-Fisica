@@ -21,7 +21,7 @@
     <div class="metric-card">
       <div class="metric-icon green">📋</div>
       <div class="metric-content">
-        <div class="metric-value">{{ metricas.historiasClinicas }}</div>
+        <div class="metric-value">{{ metricas.hc }}</div>
         <div class="metric-label">Historias Clínicas</div>
       </div>
     </div>
@@ -43,18 +43,10 @@
     </div>
 
     <div class="metric-card">
-      <div class="metric-icon red">👨‍⚕️</div>
+      <div class="metric-icon teal">💊</div>
       <div class="metric-content">
-        <div class="metric-value">{{ metricas.usuarios }}</div>
-        <div class="metric-label">Usuarios Activos</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon teal">✅</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ metricas.citasCompletadas }}</div>
-        <div class="metric-label">Citas Completadas</div>
+        <div class="metric-value">{{ metricas.diagnostico }}</div>
+        <div class="metric-label">Total Diagnosticos</div>
       </div>
     </div>
   </div>
@@ -140,7 +132,7 @@
           <div class="chart-bars">
             <div class="chart-bar-group" *ngFor="let dia of actividadSemanal">
               <div class="chart-bar-value">{{ dia.turnos }}</div>
-              <div class="chart-bar purple" [style.height]="dia.altura"></div>
+              <div class="chart-bar purple" [style.height]="dia.altura + 'px'"></div>
               <div class="chart-bar-label">{{ dia.dia }}</div>
             </div>
           </div>

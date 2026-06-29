@@ -1,0 +1,11 @@
+{
+  "/api/referencias": {
+    "target": "https://refcon.minsa.gob.pe",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/referencias": "/refconv02/his/referencia"
+    }
+  }
+}
