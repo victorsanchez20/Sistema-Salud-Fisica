@@ -58,17 +58,17 @@
     <div class="charts-section">
 
       <div class="charts-row">
-        <!-- Citas por mes -->
+        <!-- Pacientes por Edad -->
         <div class="chart-card">
           <div class="chart-header">
-            <h3>Citas por Mes</h3>
-            <span class="chart-period">2026</span>
+            <h3>Pacientes por Edad</h3>
+            <span class="chart-period">General</span>
           </div>
           <div class="chart-bars">
-            <div class="chart-bar-group" *ngFor="let mes of citasPorMes">
-              <div class="chart-bar-value">{{ mes.citas }}</div>
-              <div class="chart-bar blue" [style.height]="mes.altura"></div>
-              <div class="chart-bar-label">{{ mes.mes }}</div>
+            <div class="chart-bar-group" *ngFor="let rango of pacientesPorEdad">
+              <div class="chart-bar-value">{{ rango.cantidad }}</div>
+              <div class="chart-bar blue" [style.height]="rango.altura"></div>
+              <div class="chart-bar-label">{{ rango.rango }}</div>
             </div>
           </div>
         </div>

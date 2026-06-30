@@ -18,9 +18,9 @@ interface Metricas {
   diagnostico: number;
 }
 
-interface CitaMes {
-  mes: string;
-  citas: number;
+interface PacienteEdad {
+  rango: string;
+  cantidad: number;
   altura: string;
 }
 
@@ -66,14 +66,7 @@ export class Inicio implements OnInit {
     diagnostico: 0
   };
 
-  citasPorMes: CitaMes[] = [
-    { mes: 'Ene', citas: 0, altura: '%' },
-    { mes: 'Feb', citas: 0, altura: '%' },
-    { mes: 'Mar', citas: 0, altura: '%' },
-    { mes: 'Abr', citas: 0, altura: '%' },
-    { mes: 'May', citas: 0, altura: '%' },
-    { mes: 'Jun', citas: 0, altura: '%' },
-  ];
+  pacientesPorEdad: PacienteEdad[] = [];
 
   pacientesPorMes: PacienteMes[] = [];
 
@@ -121,13 +114,14 @@ export class Inicio implements OnInit {
       hcmayor: this.historialClinicaService.ultimahc().pipe(catchError(() => of(0))),
       totalDiagnostico: this.diagnosticoService.totalDiagnostico().pipe(catchError(() => of(0))),
       citasPorFecha: this.disponibilidadService.cantidadDisponibilidadPorFecha().pipe(catchError(() => of({}))),
-      sessionEstados: this.sesionService.contarEstados().pipe(catchError(() => of({ registrada: 0, completada: 0, cancelada: 0 })))
+      sessionEstados: this.sesionService.contarEstados().pipe(catchError(() => of({ registrada: 0, completada: 0, cancelada: 0 }))),
+      pacientesEdad: this.pacienteService.pacientesPorEdad().pipe(catchError(() => of({})))
     }).pipe(
       takeUntilDestroyed(this.destroyedRef)
 
     ).subscribe({
       next: ({sesiones, totalPacientes, totalDoctores, pacientesPorMes, totalDisponibilidad, hcmayor,
-          totalDiagnostico, citasPorFecha, sessionEstados
+          totalDiagnostico, citasPorFecha, sessionEstados, pacientesEdad
       }) => {
         this.metricas.pacientes = totalPacientes;
         this.metricas.terapias = totalDoctores;
@@ -137,6 +131,7 @@ export class Inicio implements OnInit {
         this.metricas.hc = hcmayor;
         this.metricas.diagnostico = totalDiagnostico;
         this.buildChartCitas(citasPorFecha);
+        this.buildChartEdad(pacientesEdad);
         this.estadoCitas = {
           total: sessionEstados.registrada + sessionEstados.completada + sessionEstados.cancelada,
           completadas: sessionEstados.completada,
@@ -204,5 +199,19 @@ export class Inicio implements OnInit {
       turnos,
       altura: Math.round((turnos / maxVal) * 90)  // 140px máximo
     }));
+  }
+
+  buildChartEdad(apiResponse: {[key: string]: number}): void {
+    const rangos = ['0-10', '11-20', '21-30', '31-40', '41-50', '50+'];
+    const maxVal = Math.max(...rangos.map(r => apiResponse[r] ?? 0), 1);
+
+    this.pacientesPorEdad = rangos.map(rango => {
+      const cantidad = apiResponse[rango] ?? 0;
+      return {
+        rango,
+        cantidad,
+        altura: Math.round((cantidad / maxVal) * 100) + '%'
+      };
+    });
   }
 }
