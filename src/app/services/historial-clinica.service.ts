@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import { ApiService } from '../core/api.service';
 
 export interface ArchivoHC {
   id?: number;
@@ -29,22 +28,24 @@ export interface HistoriaClinicaUpdate {
   archivos: ArchivoHC[];
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class HistorialClinicaService {
-  constructor(private http: HttpClient) {}
+@Injectable({ providedIn: 'root' })
+export class HistorialClinicaService extends ApiService {
+  private readonly api = this.url('/api/historia-clinica');
 
   obtenerPorPaciente(pacienteId: number): Observable<HistoriaClinicaResponse[]> {
-    return this.http.get<HistoriaClinicaResponse[]>(
-    `${environment.api}/api/historia-clinica/paciente/${pacienteId}`);
+    return this.http.get<HistoriaClinicaResponse[]>(`${this.api}/paciente/${pacienteId}`);
+  }
+
+  /** El backend responde texto plano al crear una historia clínica. */
+  crear(payload: unknown): Observable<string> {
+    return this.http.post(this.api, payload, { responseType: 'text' });
   }
 
   actualizar(id: number, dto: HistoriaClinicaUpdate): Observable<any> {
-    return this.http.put(`${environment.api}/api/historia-clinica/${id}`, dto);
+    return this.http.put(`${this.api}/${id}`, dto);
   }
 
   ultimahc() {
-    return this.http.get<number>(`${environment.api}/api/historia-clinica/ultima-hc`);
+    return this.http.get<number>(`${this.api}/ultima-hc`);
   }
 }

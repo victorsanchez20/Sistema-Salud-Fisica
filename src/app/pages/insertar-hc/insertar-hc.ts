@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { Paciente } from '../../models/paciente.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
 import { SupabaseService } from '../../services/supabase.service';
-import { environment } from '../../../environments/environment';
+import { HistorialClinicaService } from '../../services/historial-clinica.service';
 import Swal from 'sweetalert2';
+import { firstValueFrom } from 'rxjs';
 import { DoctorService } from '../../services/doctor.service';
 import { Doctor } from '../../models/doctor.model';
 import { DiagnosticoService } from '../../services/diagnostico.service';
@@ -70,7 +70,7 @@ export class InsertarHc implements OnInit {
     private diagnosticoService: DiagnosticoService,
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
-    private http: HttpClient
+    private historialClinicaService: HistorialClinicaService
   ) {
   }
 
@@ -157,9 +157,7 @@ export class InsertarHc implements OnInit {
       };
       console.log(payload);
 
-      await this.http.post(`${environment.api}/api/historia-clinica`, payload, {
-        responseType: 'text'
-      }).toPromise();
+      await firstValueFrom(this.historialClinicaService.crear(payload));
 
       Swal.fire({ icon: 'success', title: 'Historia clinica guardada correctamente', timer: 1400, showConfirmButton: false });
       this.limpiar();

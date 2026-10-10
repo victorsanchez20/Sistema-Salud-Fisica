@@ -10,8 +10,11 @@ import { PacienteService } from '../../services/paciente.service';
 import { DisponibilidadDoctorService } from '../../services/disponibilidad-doctor.service';
 import { CitaService } from '../../services/cita.service';
 import { HttpClientModule } from '@angular/common/http';
-import { SesionService } from '../../services/sesion.service';
+import { HorarioService } from '../../services/horario.service';
 import Swal from 'sweetalert2';
+import { construirMes, formatearFechaIso } from '../../utils/calendario.util';
+import { construirPayloadCita } from '../../utils/cita-payload.util';
+import { filtrarHorasPorTurno } from '../../config/turnos.config';
 
 interface TurnoDia {
   doctorId: number;
@@ -92,9 +95,8 @@ export class Citar {
     private pacienteService: PacienteService,
     private disponibilidadService: DisponibilidadDoctorService,
     private citaService: CitaService,
-    private sesionService: SesionService
+    private horarioService: HorarioService
   ) {
-      console.log('CitaService disponible:', !!citaService);
   }
 
   ngOnInit() {
@@ -134,10 +136,10 @@ export class Citar {
 
     if (!dia) return;
 
-    const fecha = `${this.anioActual}-${String(this.mesActual + 1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+    const fecha = formatearFechaIso(this.anioActual, this.mesActual, dia);
 
-    this.sesionService
-      .getHorasDisponibles(turno.doctorId, fecha)
+    this.horarioService
+      .obtenerHorasDisponibles(turno.doctorId, fecha)
       .subscribe(horasDisponibles => {
 
         const horasFiltradas = this.filtrarHorasPorTurno(
@@ -174,50 +176,26 @@ export class Citar {
       return;
     }
 
-    // DEBUG: Mostrar los valores actuales
-    console.log('fisioterapeutaSeleccionado:', this.fisioterapeutaSeleccionado);
-    console.log('doctor array:', this.doctor);
-    console.log('diagnosticoSeleccionado:', this.diagnosticoSeleccionado);
-    console.log('diagnostico array:', this.diagnostico);
+    const doctorSeleccionado = this.doctor.find(d => d.id === this.fisioterapeutaSeleccionado);
+    const diagnosticoSeleccionadoObj = this.diagnostico.find(d => d.id === this.diagnosticoSeleccionado);
 
-    // Buscar el doctor seleccionado - usar trim() para eliminar espacios
-    const doctorSeleccionado = this.doctor.find(
-      d => d.id === this.fisioterapeutaSeleccionado
-    );
-
-    
-    // Buscar el diagnóstico seleccionado
-    const diagnosticoSeleccionadoObj = this.diagnostico.find(d => 
-      d.id === this.diagnosticoSeleccionado
-    );
-    
-    console.log('doctorSeleccionado encontrado:', doctorSeleccionado);
-    console.log('diagnosticoSeleccionadoObj encontrado:', diagnosticoSeleccionadoObj);
-    
     if (!doctorSeleccionado) {
       Swal.fire({ icon: 'error', title: `Error: No se encontró el doctor "${this.fisioterapeutaSeleccionado}" en la lista` });
       return;
     }
-    
+
     if (!diagnosticoSeleccionadoObj) {
       Swal.fire({ icon: 'error', title: `Error: No se encontró el diagnóstico con ID ${this.diagnosticoSeleccionado}` });
       return;
     }
 
-    // Crear la cita en el formato que espera el backend
-    const payload = {
-      paciente: this.pacienteSeleccionado.id,        // solo el ID
-      doctor: doctorSeleccionado.id,                // solo el ID
-      diagnostico: diagnosticoSeleccionadoObj.id,  // solo el ID
-      fecha_creacion: new Date().toISOString().substring(0, 10),
-      numero_cita: this.sesionesProgramadas.length,
-      sesiones: this.sesionesProgramadas.map((s, index) => ({
-        numero_sesion: index + 1,
-        fecha: `${s.fecha} ${s.hora}:00`, // → "2026-01-02 07:00:00",
-        estado: 1
-      }))
-    };
-    console.log('PAYLOAD FINAL:', payload);
+    const payload = construirPayloadCita({
+      pacienteId: this.pacienteSeleccionado.id,
+      doctorId: doctorSeleccionado.id!,
+      diagnosticoId: diagnosticoSeleccionadoObj.id!,
+      fechaCreacion: new Date().toISOString().substring(0, 10),
+      sesiones: this.sesionesProgramadas,
+    });
     this.citaService.registrar(payload).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: '✅ Cita y sesiones registradas', timer: 1800, showConfirmButton: false });
@@ -287,41 +265,20 @@ export class Citar {
   }
 
   generarCalendario() {
-    this.calendarioCompleto = [];
-
-    const anio = this.anioActual;
-    const mes = this.mesActual;
-
     const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0); // 🔑 comparar solo fechas
+    hoy.setHours(0, 0, 0, 0); // comparar solo fechas
 
-    const primerDia = new Date(anio, mes, 1);
-    let diaSemana = primerDia.getDay();
-    diaSemana = diaSemana === 0 ? 6 : diaSemana - 1;
-
-    // 🔹 DÍAS VACÍOS INICIO
-    for (let i = 0; i < diaSemana; i++) {
-      this.calendarioCompleto.push({
-        numero: null,
-        turnos: [],
-        vacio: true
-      });
-    }
-
-    const diasMes = new Date(anio, mes + 1, 0).getDate();
-
-    // 🔹 DÍAS REALES DEL MES
-    for (let d = 1; d <= diasMes; d++) {
-      const fechaObj = new Date(anio, mes, d);
-      fechaObj.setHours(0, 0, 0, 0);
-
-      this.calendarioCompleto.push({
-        numero: d,
+    this.calendarioCompleto = construirMes<DiaCalendario>(
+      this.anioActual,
+      this.mesActual,
+      () => ({ numero: null, turnos: [], vacio: true }),
+      dia => ({
+        numero: dia,
         turnos: [],
         vacio: false,
-        pasado: fechaObj < hoy   // 🔴 AQUÍ ESTÁ LA CLAVE
-      });
-    }
+        pasado: new Date(this.anioActual, this.mesActual, dia) < hoy,
+      }),
+    );
   }
 
   cargarHorario() {
@@ -340,8 +297,6 @@ export class Citar {
             t => t.doctorId === this.fisioterapeutaSeleccionado
           )
     }));
-    console.log('Doctor seleccionado:', this.fisioterapeutaSeleccionado, typeof this.fisioterapeutaSeleccionado);
-  console.log('Turnos disponibles:', this.disponibilidadCompleta);
 
   }
 
@@ -409,23 +364,7 @@ export class Citar {
   }
 
   filtrarHorasPorTurno(horas: string[], turno: string): string[] {
-    return horas.filter(hora => {
-      const h = parseInt(hora.split(':')[0], 10);
-
-      if (turno === 'M1') {
-        return h >= 7 && h < 13;
-      }
-
-      if (turno === 'T1') {
-        return h >= 13 && h < 19;
-      }
-
-      if (turno === 'MT1') {
-        return h >= 7 && h < 19;
-      }
-
-      return false;
-    });
+    return filtrarHorasPorTurno(horas, turno);
   }
 
 }

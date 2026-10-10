@@ -1,35 +1,12 @@
 import { Injectable } from '@angular/core';
+import { CrudApiService } from '../core/api.service';
 import { Diagnostico } from '../models/diagnostico.model';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 
-
-@Injectable({
-  providedIn: 'root',
-})
-export class DiagnosticoService {
-  //private APIURL = 'http://localhost:8080/api/terapia/diagnostico';
-  private APIURL = `${environment.api}/api/terapia/diagnostico`;
-
-  constructor(private http: HttpClient) {}
-
-  crear(diagnostico: Diagnostico) {
-    return this.http.post<Diagnostico>(this.APIURL, diagnostico);
-  }
-
-  leer() {
-    return this.http.get<Diagnostico[]>(this.APIURL);
-  }
-
-  actualizar(id: number, diagnostico: Diagnostico) {
-    return this.http.put(`${this.APIURL}/${id}`, diagnostico);
-  }
-
-  eliminar(id: number) {
-    return this.http.delete<Diagnostico[]>(`${this.APIURL}/${id}`)
-  }
+@Injectable({ providedIn: 'root' })
+export class DiagnosticoService extends CrudApiService<Diagnostico> {
+  protected readonly resource = '/api/terapia/diagnostico';
 
   totalDiagnostico() {
-    return this.http.get<number>(`${this.APIURL}/total-diagnostico`);
+    return this.http.get<number>(`${this.endpoint}/total-diagnostico`);
   }
 }

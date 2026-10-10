@@ -11,6 +11,7 @@ import { TurnoService } from '../../services/turno.service';
 import { FormsModule } from '@angular/forms';
 import { CalendarioGuardado } from '../../models/calendarioGuardado.model';
 import { DisponibilidadView } from '../../models/disponivilidadView.model';
+import { construirMes, diasVaciosAntesDelPrimero } from '../../utils/calendario.util';
 
 interface TurnoDia {
   nombre: string;
@@ -132,29 +133,7 @@ export class Calendario implements OnInit {
   }
 
   generarCalendarioModal() {
-    const calendario: DiaCalendario[] = [];
-
-    const primerDia = new Date(this.modalAnio, this.modalMes - 1, 1).getDay();
-    const offset = (primerDia + 6) % 7;
-
-    for (let i = 0; i < offset; i++) {
-      calendario.push({
-        numero: 0,
-        turnos: [],
-        vacio: true
-      });
-    }
-
-    const diasMes = new Date(this.modalAnio, this.modalMes, 0).getDate();
-
-    for (let d = 1; d <= diasMes; d++) {
-      calendario.push({
-        numero: d,
-        turnos: []
-      });
-    }
-
-    this.modalCalendario = calendario;
+    this.modalCalendario = this.construirGrilla(this.modalAnio, this.modalMes);
   }
 
   cerrarModal() {
@@ -222,7 +201,6 @@ export class Calendario implements OnInit {
     this.turnoService.leer().subscribe({
       next: data => {
         this.turnos = data;
-        console.log('TURNOS BD →', this.turnos);
       },
       error: err => console.error(err)
     });
@@ -233,7 +211,6 @@ export class Calendario implements OnInit {
     this.doctorService.leer().subscribe({
       next: (data) => {
         this.doctores = data;
-        console.log('DOCTORES BD →', this.doctores);
       },
       error: err => console.error(err)
     });
@@ -249,32 +226,17 @@ export class Calendario implements OnInit {
   }
 
   generarCalendario() {
-    this.calendario = [];
+    this.calendario = this.construirGrilla(this.anio, this.mes);
+  }
 
-    // día real en que empieza el mes (0=Dom, 1=Lun...)
-    const primerDia = new Date(this.anio, this.mes - 1, 1).getDay();
-
-    // convertir a lunes=0
-    const offset = (primerDia + 6) % 7;
-
-    // días vacíos antes del día 1
-    for (let i = 0; i < offset; i++) {
-      this.calendario.push({
-        numero: 0,
-        turnos: [],
-        vacio: true
-      });
-    }
-
-    // cantidad real de días del mes
-    const diasMes = new Date(this.anio, this.mes, 0).getDate();
-
-    for (let d = 1; d <= diasMes; d++) {
-      this.calendario.push({
-        numero: d,
-        turnos: []
-      });
-    }
+  /** Grilla del mes (mes en base 1, como en los selectores de esta pantalla). */
+  private construirGrilla(anio: number, mes: number): DiaCalendario[] {
+    return construirMes<DiaCalendario>(
+      anio,
+      mes - 1,
+      () => ({ numero: 0, turnos: [], vacio: true }),
+      dia => ({ numero: dia, turnos: [] }),
+    );
   }
 
   cargarExcel(event: any) {
@@ -288,8 +250,6 @@ export class Calendario implements OnInit {
       const workbook = XLSX.read(data, { type: 'array' });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const filas: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-      console.log('EXCEL COMPLETO →', filas);
 
       // fila con números 1..31
       const filaDiasIndex = filas.findIndex(row =>
@@ -307,8 +267,7 @@ export class Calendario implements OnInit {
 
       this.generarCalendario();
 
-      const primerDia = new Date(this.anio, this.mes - 1, 1).getDay();
-      const offset = (primerDia + 6) % 7; // lunes = 0
+      const offset = diasVaciosAntesDelPrimero(this.anio, this.mes - 1); // lunes = 0
 
 
       for (const persona of filasPersonal) {
@@ -330,7 +289,6 @@ export class Calendario implements OnInit {
       }
 
       this.calendario = [...this.calendario];
-      console.log('CALENDARIO FINAL →', this.calendario);
     };
 
     reader.readAsArrayBuffer(file);
@@ -361,7 +319,6 @@ export class Calendario implements OnInit {
       }
     }
 
-    console.log('DTO FINAL →', resultado);
     return resultado;
   }
 
