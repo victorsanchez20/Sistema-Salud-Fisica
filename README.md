@@ -57,3 +57,24 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+---
+
+## Arquitectura tras el mantenimiento (v2.0.0)
+
+```
+src/app
+├─ core/        ApiService, CrudApiService, token API_BASE_URL (IoC)
+├─ services/    un servicio por recurso de la API (heredan de ApiService)
+├─ utils/       calendario.util, cita-payload.util (lógica pura, testeada)
+├─ config/      turnos.config (rangos de turno extensibles)
+├─ testing/     proveedores compartidos para pruebas
+└─ pages/ components/ layout/ guards/
+```
+
+* La URL de la API se inyecta con `API_BASE_URL` (`app.config.ts` ← `environments/*`).
+* Pruebas: `npm test` (vitest).
+
+## Estrategia de ramas (GitFlow simplificado)
+
+`main` (solo releases con tag) · `develop` · `feature/RFC-xx-*` · `release/x.y.z`.
