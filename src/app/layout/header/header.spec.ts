@@ -22,4 +22,10 @@ describe('Header', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('el enlace Calendario apunta a la ruta /calendario (RFC-16)', () => {
+    const enlaces: HTMLAnchorElement[] = Array.from(fixture.nativeElement.querySelectorAll('a'));
+    const calendario = enlaces.find(a => a.textContent?.includes('Calendario'));
+    expect(calendario?.getAttribute('href')).toBe('/calendario');
+  });
 });
