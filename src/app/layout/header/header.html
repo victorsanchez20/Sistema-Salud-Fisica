@@ -1,5 +1,10 @@
 <header class="app-header">
     <nav class="nav-container">
+        <button type="button" class="menu-toggle" (click)="alternarMenu.emit()"
+                [attr.aria-expanded]="menuAbierto" aria-label="Abrir o cerrar el menú">
+            <span aria-hidden="true">&#9776;</span>
+        </button>
+
         <div class="brand">
             <h1>SERVICIO MÉDICO DE APOYO</h1>
             <span>Medicina Física y Rehabilitación</span>
@@ -8,11 +13,11 @@
         <ul class="nav-menu">
             <li><a href="https://cel.sis.gob.pe/SisConsultaEnLinea" target="_blank">
                 <i class="fa-solid fa-shield-heart"></i>
-                Consultar Seguro
+                <span class="texto">Consultar Seguro</span>
             </a></li>
             <li><a href="#">
                 <i class="fa-solid fa-calendar-days"></i>
-                Calendario
+                <span class="texto">Calendario</span>
             </a></li>
         </ul>
     </nav>

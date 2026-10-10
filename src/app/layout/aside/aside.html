@@ -1,17 +1,17 @@
-<aside class="sidebar">
+<aside class="sidebar" [class.abierto]="abierto">
   <nav class="sidebar-nav">
 
-    <a routerLink="/home" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/home" routerLinkActive="active">
       <i class="fa-solid fa-house"></i>
       <span>Inicio</span>
     </a>
 
-    <a routerLink="/listapacientes" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/listapacientes" routerLinkActive="active">
       <i class="fa-solid fa-list"></i>
       <span>Lista de Pacientes</span>
     </a>
 
-    <a routerLink="/nuevopacientes" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/nuevopacientes" routerLinkActive="active">
       <i class="fa-solid fa-user-plus"></i>
       <span>Nuevo Paciente</span>
     </a>
@@ -21,21 +21,21 @@
       <span>Citar</span>
     </a>
     
-    <a routerLink="/calendario" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/calendario" routerLinkActive="active">
       <i class="fa-solid fa-calendar-days"></i>
       <span>Calendario</span>
     </a>
 
-    <a routerLink="/insertar-hc" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/insertar-hc" routerLinkActive="active">
       <i class="fa-solid fa-book-medical"></i>
       <span>Insertar en HC</span>
     </a>
-    <a routerLink="/referencias" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/referencias" routerLinkActive="active">
       <i class="fa-regular fa-clipboard"></i>
       <span>Consultar Referencia</span>
     </a>
 
-    <a routerLink="/configuracion" routerLinkActive="active">
+    <a (click)="cerrar.emit()" routerLink="/configuracion" routerLinkActive="active">
       <i class="fa-solid fa-gear"></i>
       <span>Configuración</span>
     </a>

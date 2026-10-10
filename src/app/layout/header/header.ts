@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './header.css',
 })
 export class Header {
-
+  @Input() menuAbierto = false;
+  @Output() alternarMenu = new EventEmitter<void>();
 }

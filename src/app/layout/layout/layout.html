@@ -1,5 +1,6 @@
-<app-header></app-header>
-<app-aside></app-aside>
+<app-header (alternarMenu)="alternarMenu()" [menuAbierto]="menuAbierto"></app-header>
+<app-aside [abierto]="menuAbierto" (cerrar)="cerrarMenu()"></app-aside>
+<div class="backdrop" *ngIf="menuAbierto" (click)="cerrarMenu()"></div>
 
 <main class="content">
   <router-outlet></router-outlet>

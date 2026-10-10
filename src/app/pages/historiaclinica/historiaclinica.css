@@ -1,6 +1,5 @@
 /* CONTENEDOR PRINCIPAL */
 .historyclinical {
-  margin-left: 250px;
   padding: 32px;
   background: linear-gradient(180deg, #f8fafc, #eef2f7);
   min-height: 100vh;
@@ -140,10 +139,25 @@
 }
 
 /* BOTON EDITAR */
+.hc-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.hc-section-head h3 {
+  margin-bottom: 0;
+}
+
+.hc-acciones {
+  display: flex;
+  gap: 8px;
+}
+
 .btn-edit {
-  position: absolute;
-  right: 0;
-  top: 0;
 
   padding: 6px 14px;
   background: linear-gradient(135deg, #ff9800, #ffb74d);
@@ -157,9 +171,6 @@
 }
 
 .btn-delete {
-  position: absolute;
-  right: 70px;
-  top: 0;
   padding: 6px 14px;
   background: linear-gradient(135deg, #ff0000, #df5151);
   border: none;

@@ -24,13 +24,17 @@
 
     <!-- DATOS PERSONALES -->
     <div class="hc-section">
-      <h3>Datos Personales</h3>
-      <button class="btn-edit" (click)="editar = !editar">
-        {{ editar ? 'Cancelar' : 'Editar'}}
-      </button>
-      <button class="btn-delete" (click)="eliminarPaciente()">
-        Eliminar
-      </button>
+      <div class="hc-section-head">
+        <h3>Datos Personales</h3>
+        <div class="hc-acciones">
+          <button class="btn-delete" (click)="eliminarPaciente()">
+            Eliminar
+          </button>
+          <button class="btn-edit" (click)="editar = !editar">
+            {{ editar ? 'Cancelar' : 'Editar'}}
+          </button>
+        </div>
+      </div>
       <div class="hc-grid" *ngIf="paciente">
 
         <div>

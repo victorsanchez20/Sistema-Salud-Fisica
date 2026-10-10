@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,6 +10,9 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './aside.css',
 })
 export class Aside {
+  @Input() abierto = false;
+  @Output() cerrar = new EventEmitter<void>();
+
   constructor(private authService: AuthService, private router: Router) {}
 
   cerrarSesion() {
