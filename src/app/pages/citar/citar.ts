@@ -10,7 +10,7 @@ import { PacienteService } from '../../services/paciente.service';
 import { DisponibilidadDoctorService } from '../../services/disponibilidad-doctor.service';
 import { CitaService } from '../../services/cita.service';
 import { HttpClientModule } from '@angular/common/http';
-import { SesionService } from '../../services/sesion.service';
+import { HorarioService } from '../../services/horario.service';
 import Swal from 'sweetalert2';
 
 interface TurnoDia {
@@ -92,7 +92,7 @@ export class Citar {
     private pacienteService: PacienteService,
     private disponibilidadService: DisponibilidadDoctorService,
     private citaService: CitaService,
-    private sesionService: SesionService
+    private horarioService: HorarioService
   ) {
       console.log('CitaService disponible:', !!citaService);
   }
@@ -136,8 +136,8 @@ export class Citar {
 
     const fecha = `${this.anioActual}-${String(this.mesActual + 1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
 
-    this.sesionService
-      .getHorasDisponibles(turno.doctorId, fecha)
+    this.horarioService
+      .obtenerHorasDisponibles(turno.doctorId, fecha)
       .subscribe(horasDisponibles => {
 
         const horasFiltradas = this.filtrarHorasPorTurno(
@@ -207,8 +207,8 @@ export class Citar {
     // Crear la cita en el formato que espera el backend
     const payload = {
       paciente: this.pacienteSeleccionado.id,        // solo el ID
-      doctor: doctorSeleccionado.id,                // solo el ID
-      diagnostico: diagnosticoSeleccionadoObj.id,  // solo el ID
+      doctor: doctorSeleccionado.id!,               // solo el ID
+      diagnostico: diagnosticoSeleccionadoObj.id!, // solo el ID
       fecha_creacion: new Date().toISOString().substring(0, 10),
       numero_cita: this.sesionesProgramadas.length,
       sesiones: this.sesionesProgramadas.map((s, index) => ({

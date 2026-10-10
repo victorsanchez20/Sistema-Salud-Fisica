@@ -8,3 +8,20 @@ export interface Cita {
   id_diagnostico: { nombre: string; };
   sesiones: any[];
 }
+
+/** Sesión tal como la espera el backend al registrar una cita. */
+export interface SesionRequest {
+  numero_sesion: number;
+  fecha: string;   // "yyyy-MM-dd HH:mm:ss"
+  estado: number;
+}
+
+/** Cuerpo del POST /api/terapia/cita. */
+export interface CitaRequest {
+  paciente: number;
+  doctor: number;
+  diagnostico: number;
+  fecha_creacion: string;   // "yyyy-MM-dd"
+  numero_cita: number;
+  sesiones: SesionRequest[];
+}

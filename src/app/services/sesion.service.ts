@@ -1,17 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from '../core/api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class SesionService {
-  //private api = 'http://localhost:8080/api/terapia/sesion';
-  private api = `${environment.api}/api/terapia/sesion`;
-
-
-  constructor(private http: HttpClient) {}
+@Injectable({ providedIn: 'root' })
+export class SesionService extends ApiService {
+  private readonly api = this.url('/api/terapia/sesion');
 
   listarPorCita(idCita: number) {
     return this.http.get<any[]>(`${this.api}/cita/${idCita}`);
@@ -27,18 +20,6 @@ export class SesionService {
     return this.http.get<any[]>(`${this.api}/proximas`);
   }
 
-  getHorasDisponibles(doctorId: number, fecha: string) {
-  return this.http.get<string[]>(
-    `${environment.api}/horarios/horas-disponibles`,
-    {
-      params: {
-        doctorId,
-        fecha
-      }
-    }
-  );
-}
-
   actualizarEstado(id: number, estado: number) {
     return this.http.put<any>(`${this.api}/${id}/estado`, { estado });
   }
@@ -46,5 +27,4 @@ export class SesionService {
   contarEstados() {
     return this.http.get<{ registrada: number; completada: number; cancelada: number }>(`${this.api}/estados-count`);
   }
-
 }
