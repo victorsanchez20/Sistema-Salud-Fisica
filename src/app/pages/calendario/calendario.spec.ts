@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PROVIDERS_PRUEBA } from '../../testing/test-providers';
 
 import { Calendario } from './calendario';
 
@@ -8,7 +9,8 @@ describe('Calendario', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Calendario]
+      imports: [Calendario],
+      providers: PROVIDERS_PRUEBA
     })
     .compileComponents();
 

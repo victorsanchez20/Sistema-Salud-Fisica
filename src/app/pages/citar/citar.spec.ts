@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PROVIDERS_PRUEBA } from '../../testing/test-providers';
 
 import { Citar } from './citar';
 
@@ -8,7 +9,8 @@ describe('Citar', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Citar]
+      imports: [Citar],
+      providers: PROVIDERS_PRUEBA
     })
     .compileComponents();
 
