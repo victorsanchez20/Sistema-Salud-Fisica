@@ -1,59 +1,37 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Paciente } from '../models/paciente.model';
-import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import { CrudApiService } from '../core/api.service';
+import { Paciente } from '../models/paciente.model';
 
+@Injectable({ providedIn: 'root' })
+export class PacienteService extends CrudApiService<Paciente> {
+  protected readonly resource = '/api/terapia/paciente';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class PacienteService {
-  
-  //private APIURL = 'http://localhost:8080/api/terapia/paciente';
-  private APIURL = `${environment.api}/api/terapia/paciente`;
+  // Estado compartido entre pantallas (se conserva tal como estaba)
   pacientes: Paciente[] = [];
   textoPaciente = '';
 
-  constructor(private http: HttpClient) {}
-
-  crear(paciente: Paciente) {
-    return this.http.post<Paciente>(this.APIURL, paciente);
-  }
-
-  leer () {
-    return this.http.get<Paciente[]>(this.APIURL);
-  }
-
   leerPorHC(hc: string) {
-    return this.http.get<Paciente>(`${this.APIURL}/hc/${hc}`);
+    return this.http.get<Paciente>(`${this.endpoint}/hc/${hc}`);
   }
-  
+
   buscarPorNombre(nombre: string) {
-    return this.http.get<Paciente[]>(`${this.APIURL}/buscar`, { params: { q: nombre } });
+    return this.http.get<Paciente[]>(`${this.endpoint}/buscar`, { params: { q: nombre } });
   }
 
   buscarPorDNI(dni: string) {
-    return this.http.get<Paciente[]>(`${this.APIURL}/${dni}`);
-  }
-
-  actualizar(id: number, paciente: Paciente) {
-    return this.http.put<Paciente>(`${this.APIURL}/${id}`, paciente);
-  }
-
-  eliminar(id: number) {
-    return this.http.delete<Paciente[]>(`${this.APIURL}/${id}`);
+    return this.http.get<Paciente[]>(`${this.endpoint}/${dni}`);
   }
 
   cantidadPaciente() {
-    return this.http.get<number>(`${this.APIURL}/cantidad-pacientes`)
+    return this.http.get<number>(`${this.endpoint}/cantidad-pacientes`);
   }
 
-  cantidadPacientePorMes(): Observable<{[key: string]: number}> {
-    return this.http.get<{[key: string]: number}>(`${this.APIURL}/cantidad-pacientes-ultimos-meses`);
+  cantidadPacientePorMes(): Observable<{ [key: string]: number }> {
+    return this.http.get<{ [key: string]: number }>(`${this.endpoint}/cantidad-pacientes-ultimos-meses`);
   }
 
-  pacientesPorEdad(): Observable<{[key: string]: number}> {
-    return this.http.get<{[key: string]: number}>(`${this.APIURL}/pacientes-por-edad`);
+  pacientesPorEdad(): Observable<{ [key: string]: number }> {
+    return this.http.get<{ [key: string]: number }>(`${this.endpoint}/pacientes-por-edad`);
   }
 }

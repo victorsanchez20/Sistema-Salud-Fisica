@@ -1,39 +1,13 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Doctor } from '../models/doctor.model';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { CrudApiService } from '../core/api.service';
+import { Doctor } from '../models/doctor.model';
 
-
-@Injectable({
-  providedIn: 'root',
-})
-export class DoctorService {
-  
-  //private API_URL  = 'http://localhost:8080/api/terapia/doctor';
-  private API_URL  = `${environment.api}/api/terapia/doctor`;
-
-  constructor(private http: HttpClient) {}
-
-  crear(doctor: Doctor) {
-    return this.http.post<Doctor>(this.API_URL, doctor);
-  }
-
-  leer() {
-    return this.http.get<Doctor[]>(this.API_URL);
-  }
-
-  actualizar(id: number, doctor: Doctor) {
-    return this.http.put(`${this.API_URL}/${id}`, doctor);
-  }
-
-  eliminar(id: number) {
-    return this.http.delete<Doctor[]>(`${this.API_URL}/${id}`);
-  }
+@Injectable({ providedIn: 'root' })
+export class DoctorService extends CrudApiService<Doctor> {
+  protected readonly resource = '/api/terapia/doctor';
 
   getDoctorConPacientes(nombre: string): Observable<any> {
-    return this.http.get<any>(
-      `${this.API_URL}/datos/${encodeURIComponent(nombre)}`
-    );
+    return this.http.get<any>(`${this.endpoint}/datos/${encodeURIComponent(nombre)}`);
   }
 }
