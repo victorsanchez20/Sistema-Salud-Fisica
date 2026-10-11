@@ -6,3 +6,13 @@
 body {
     margin: 0;
 }
+/* Accesibilidad: el foco del teclado siempre es visible (RFC-18) */
+:focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 2px;
+}
+
+tr:focus-visible {
+    outline-offset: -3px;
+    background: #fef3c7;
+}
