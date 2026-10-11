@@ -15,6 +15,7 @@
     <i class="fa-solid fa-magnifying-glass"></i>
     <input
       type="text"
+      aria-label="Buscar paciente por nombre, DNI o historia clínica"
       placeholder="Buscar por Nombre, DNI o Historia Clínica"
       (input)="buscarPaciente($event.target.value)"
     />
@@ -25,14 +26,14 @@
     <table class="patients-table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>HC</th>
-          <th>Apellido Paterno</th>
-          <th>Apellido Materno</th>
-          <th>Nombres</th>
-          <th>DNI</th>
-          <th>Fecha Nac.</th>
-          <th>Edad</th>
+          <th scope="col">#</th>
+          <th scope="col">HC</th>
+          <th scope="col">Apellido Paterno</th>
+          <th scope="col">Apellido Materno</th>
+          <th scope="col">Nombres</th>
+          <th scope="col">DNI</th>
+          <th scope="col">Fecha Nac.</th>
+          <th scope="col">Edad</th>
         </tr>
       </thead>
 
@@ -42,6 +43,10 @@
         <tr
           *ngFor="let p of pacientesPaginados; let i = index"
           (click)="irHistoriaClinica(p.hc)"
+          (keydown.enter)="irHistoriaClinica(p.hc)"
+          tabindex="0"
+          role="link"
+          [attr.aria-label]="'Abrir historia clínica ' + p.hc"
           style="cursor: pointer;"
         >
           <td>{{ (paginaActual - 1) * pageSize + i + 1 }}</td>
