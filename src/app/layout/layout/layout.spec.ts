@@ -22,4 +22,12 @@ describe('Layout', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('alterna y cierra el menú lateral (RFC-17)', () => {
+    expect(component.menuAbierto).toBe(false);
+    component.alternarMenu();
+    expect(component.menuAbierto).toBe(true);
+    component.cerrarMenu();
+    expect(component.menuAbierto).toBe(false);
+  });
 });

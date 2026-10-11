@@ -5,12 +5,12 @@
   gap: 30px;
   padding: 30px;
   background: #f5f7fb;
-  margin-left: 260px ;
 }
 
 
 /* CARD */
 .card {
+  overflow-x: auto; /* las tablas anchas se desplazan dentro de la tarjeta, no desbordan la página */
   background: #fff;
   border-radius: 14px;
   padding: 20px;

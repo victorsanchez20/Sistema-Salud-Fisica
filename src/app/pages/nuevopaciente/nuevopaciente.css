@@ -5,8 +5,7 @@
   border-radius: 16px;
   max-width: 950px;
   /* El margin auto lo centrará. Quité el margin-left de 570px que rompe el responsive */
-  margin-top: 45px;
-  margin-left: 500px; 
+  margin: 45px auto 0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
   border: 1px solid #c1d3eb;
   font-family: sans-serif;

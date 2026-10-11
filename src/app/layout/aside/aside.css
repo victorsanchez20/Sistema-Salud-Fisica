@@ -1,17 +1,30 @@
 .sidebar {
   width: 240px;
-  height: 176%;
   background: #0f172a; /* azul oscuro */
   color: #e5e7eb;
   position: fixed;
   top: 72px; /* altura del header */
+  bottom: 0;
   left: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 1000;
   padding: 24px 16px;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   font-weight: bold;
   cursor: pointer;
-  position: absolute;
+  transition: transform 0.25s ease;
+}
 
+/* En pantallas pequeñas el menú se oculta y se abre con el botón del encabezado */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.abierto {
+    transform: translateX(0);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.35);
+  }
 }
 
 /* NAV */

@@ -1,5 +1,8 @@
 /* HEADER BASE */
 .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
   background: linear-gradient(135deg, #0f4c75, #3282b8);
   color: #fff;
   padding: 0 24px;
@@ -79,4 +82,49 @@
 .theme-toggle:focus {
   outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
+}
+
+/* BOTÓN DE MENÚ (solo visible en pantallas pequeñas) */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  padding: 8px 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.brand {
+  min-width: 0;
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .menu-toggle {
+    display: inline-block;
+  }
+  .app-header {
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .brand h1 {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand span {
+    display: none;
+  }
+  .nav-menu {
+    gap: 4px;
+  }
+  .nav-menu .texto {
+    display: none; /* solo iconos en móvil */
+  }
 }

@@ -4,7 +4,6 @@
   flex-direction: column;
   gap: 28px;
   max-width: 1800px;
-  margin-left: 280px;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
@@ -128,6 +127,12 @@
   gap: 20px;
 }
 
+.charts-section,
+.dashboard-main > *,
+.charts-row > * {
+  min-width: 0; /* permite que las rejillas se encojan en pantallas angostas */
+}
+
 .charts-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -135,6 +140,8 @@
 }
 
 .chart-card {
+  min-width: 0;
+  overflow-x: auto;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
