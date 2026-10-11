@@ -10,6 +10,9 @@ Todo cambio al código pasa por el flujo **RFC → Issue → Rama → Commit →
 | RFC-07 | SRP/OCP/DRY en citar y calendario (grilla, turnos, payload) | Refactor | Media | Frontend | Implementado | v2.0.0 | #11, #12 |
 | RFC-08 | Reparar pruebas y proveedores de prueba (IoC) | Mejora / Pruebas | Media | Frontend | Implementado | v2.0.0 | #13 |
 | RFC-11 | Alinear contrato de adjuntos (tipo/nombre vs tipoArchivo/nombreOriginal) | Bug | Alta | Ambos | Propuesto | — | #16 |
+| RFC-16 | Etiqueta «DNI» en fecha de nacimiento, avatar externo y enlace Calendario roto | Bug visual | Media | Frontend | Implementado | v2.1.0 | #21 |
+| RFC-17 | Diseño adaptable a tablet y móvil con menú lateral colapsable | Adaptativo (UI) | Alta | Frontend | Implementado | v2.1.0 | #22 |
+| RFC-18 | Foco visible y navegación por teclado en la lista de pacientes | Mejora (accesibilidad) | Baja | Frontend | Implementado | v2.1.0 | #23 |
 
 ## Issues (etiquetas: `bug`, `mejora`, `refactor`, `seguridad`)
 
@@ -21,6 +24,9 @@ Todo cambio al código pasa por el flujo **RFC → Issue → Rama → Commit →
 | #12 | Rangos de turno M1/T1/MT1 fijos en el componente y payload armado en citar.ts | `refactor` | RFC-07 |
 | #13 | 4 de las 11 pruebas del frontend fallaban en la línea base | `mejora` | RFC-08 |
 | #16 | El frontend envía tipo/nombre y el backend espera tipoArchivo/nombreOriginal | `bug` | RFC-11 |
+| #21 | Historia clínica: la fecha de nacimiento se rotula «DNI» y se muestra en formato ISO; avatar depende de un sitio externo; enlace «Calendario» del encabezado apunta a # | `bug` | RFC-16 |
+| #22 | En tablet/móvil el menú lateral tapa el contenido y tablas/gráficos desbordan la página | `mejora` | RFC-17 |
+| #23 | Las filas de la lista de pacientes no se pueden usar con teclado y el foco no se ve | `mejora` | RFC-18 |
 
 ## Flujo de aprobación
 
