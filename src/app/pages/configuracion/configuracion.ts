@@ -1,5 +1,5 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Doctor } from '../../models/doctor.model';
 import { Diagnostico } from '../../models/diagnostico.model';
 import { DoctorService } from '../../services/doctor.service';
@@ -9,7 +9,6 @@ import { Turno } from '../../models/turno.model';
 import { TurnoService } from '../../services/turno.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { LoggerService } from '../../core/logger.service';
 
 @Component({
   selector: 'app-configuracion',
@@ -19,7 +18,6 @@ import { LoggerService } from '../../core/logger.service';
   styleUrl: './configuracion.css',
 })
 export class Configuracion implements OnInit {
-  private readonly log = inject(LoggerService);
 
   doctor: Doctor[] = [];
   doctorForm: FormGroup;
@@ -81,6 +79,8 @@ export class Configuracion implements OnInit {
 
   /* SAVE DATOS */
   guardarDoctor() {
+    console.log(this.doctorForm.value);
+    console.log(this.doctorForm.valid);
 
     if(this.doctorForm.invalid) {
       this.doctorForm.markAllAsTouched();
@@ -112,12 +112,14 @@ export class Configuracion implements OnInit {
         this.closeTerapistaModal();
       },
       error: (err) => {
-        this.log.error('Error en la operación', err);
+        console.error(err);
         Swal.fire({ icon: 'error', title: 'Error al registrar doctor' });
       }
     })
   }
   guardarDiagnostico() {
+    console.log(this.diagnosticoForm.value);
+    console.log(this.diagnosticoForm.valid);
 
     if(this.diagnosticoForm.invalid) {
       this.diagnosticoForm.markAllAsTouched();
@@ -149,7 +151,7 @@ export class Configuracion implements OnInit {
         this.closeDiagnosticoModal();
       },
       error: (err) => {
-        this.log.error('Error en la operación', err);
+        console.error(err);
         Swal.fire({ icon: 'error', title: 'Error al registrar diagnostico' });
       }
     })
@@ -161,6 +163,7 @@ export class Configuracion implements OnInit {
       hora_fin: this.turnoForm.value.hora_fin,
     };
 
+    console.log('📤 Turno que se enviará:', turno);
 
     // 🟡 EDITAR
     if (this.editandoTurno) {
@@ -179,12 +182,13 @@ export class Configuracion implements OnInit {
     // Crear
     this.turnoService.crear(turno).subscribe({
       next: () => {
+        console.log('✅ Turno guardado correctamente');
         this.cargarTurno();
         this.closeTurnoModal();
         this.turnoForm.reset();
       },
       error: (err) => {
-        this.log.error('Error al guardar turno', err);
+        console.error('❌ Error al guardar turno', err);
       }
     });
   }
@@ -198,7 +202,7 @@ export class Configuracion implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.log.error('Error al cargar turnos', err);
+        console.error('❌ Error al cargar turnos', err);
       }
     });
   }
@@ -212,7 +216,7 @@ export class Configuracion implements OnInit {
         this.actualizarPaginacionDoctores();
         this.cdr.detectChanges();
       },
-      error: (err) => this.log.error('Error en la operación', err)
+      error: (err) => console.error(err)
     });
   }
   cargarDiagnosticos() {
@@ -225,7 +229,7 @@ export class Configuracion implements OnInit {
         this.actualizarPaginacionDiagnosticos();
         this.cdr.detectChanges();
       },
-      error: (err) => this.log.error('Error en la operación', err)
+      error: (err) => console.error(err)
     });
   }
 
@@ -266,7 +270,7 @@ export class Configuracion implements OnInit {
           this.cargarDoctores();
         },
         error: (err) => {
-          this.log.error('Error en la operación', err);
+          console.error(err);
           Swal.fire({ icon: 'error', title: 'Error al eliminar.' });
         }
       });
@@ -288,7 +292,7 @@ export class Configuracion implements OnInit {
           this.cargarDiagnosticos();
         },
         error: (err) => {
-          this.log.error('Error en la operación', err);
+          console.error(err);
           Swal.fire({ icon: 'error', title: 'Error al eliminar.' });
         }
       });
@@ -310,7 +314,7 @@ export class Configuracion implements OnInit {
           this.cargarTurno();
         },
         error: (err) => {
-          this.log.error('Error en la operación', err);
+          console.error(err);
           Swal.fire({ icon: 'error', title: 'Error al eliminar.' });
         }
       })

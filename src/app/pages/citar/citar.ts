@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DoctorService } from '../../services/doctor.service';
@@ -15,7 +15,6 @@ import Swal from 'sweetalert2';
 import { construirMes, formatearFechaIso } from '../../utils/calendario.util';
 import { construirPayloadCita } from '../../utils/cita-payload.util';
 import { filtrarHorasPorTurno } from '../../config/turnos.config';
-import { LoggerService } from '../../core/logger.service';
 
 interface TurnoDia {
   doctorId: number;
@@ -54,7 +53,6 @@ interface CitaConSesiones {
   styleUrl: './citar.css',
 })
 export class Citar {
-  private readonly log = inject(LoggerService);
 
   fisioterapeutaSeleccionado: number |  null = null;
 
@@ -204,7 +202,7 @@ export class Citar {
         this.resetFormulario();  
       },
       error: err => {
-        this.log.error('Error en la operación', err);
+        console.error(err);
         Swal.fire({ icon: 'error', title: '❌ Error al registrar' });
       }
       
@@ -311,7 +309,7 @@ export class Citar {
 
         this.cdr.detectChanges();
       },
-      error: (err) => this.log.error('Error en la operación', err)
+      error: (err) => console.error(err)
     });
   }
 
@@ -323,7 +321,7 @@ export class Citar {
         }));
         this.cdr.detectChanges();
       },
-      error: (err) => this.log.error('Error en la operación', err)
+      error: (err) => console.error(err)
     });
   }
 
@@ -339,7 +337,7 @@ export class Citar {
           this.pacientes = data;
           this.cdr.detectChanges();
         },
-        error: (err) => this.log.error('Error en la operación', err)
+        error: (err) => console.error(err)
       });
   }  
 

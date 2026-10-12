@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
 import { Paciente } from '../../models/paciente.model';
@@ -9,7 +9,6 @@ import { FormsModule } from "@angular/forms";
 import { SesionService } from '../../services/sesion.service';
 import { HistoriaClinicaResponse, HistorialClinicaService } from '../../services/historial-clinica.service';
 import { ModalHcComponent } from '../../components/modal-hc/modal-hc';
-import { LoggerService } from '../../core/logger.service';
 
 @Component({
   selector: 'app-historiaclinica',
@@ -19,7 +18,6 @@ import { LoggerService } from '../../core/logger.service';
   styleUrl: './historiaclinica.css',
 })
 export class Historiaclinica implements OnInit {
-  private readonly log = inject(LoggerService);
 
   hc!: string;
   paciente!: Paciente | null;
@@ -58,6 +56,7 @@ export class Historiaclinica implements OnInit {
           nacimiento: data.nacimiento
         };
         this.cdr.detectChanges();
+        console.log("PERSONA: " + this.paciente.id);
         
         if (this.paciente.id) {
           this.cargarCitas(this.paciente.id);
@@ -65,7 +64,7 @@ export class Historiaclinica implements OnInit {
           this.cdr.detectChanges();
         }
       },
-      error: (err) => this.log.error('Error en la operación', err),
+      error: (err) => console.error(err),
     });
   }
 
@@ -75,7 +74,7 @@ export class Historiaclinica implements OnInit {
         this.historiasClinicas = data;
         this.cdr.detectChanges();
       },
-      error: (err) => this.log.error('Error en la operación', err)
+      error: (err) => console.error(err)
     });
   }
 
@@ -107,7 +106,7 @@ export class Historiaclinica implements OnInit {
           this.cargarSesiones(cita.id, index);
         });
       },
-      error: err => this.log.error('Error en la operación', err)
+      error: err => console.error(err)
     });
   }
 
@@ -119,9 +118,10 @@ export class Historiaclinica implements OnInit {
           sesiones
         };
 
+        console.log(`Sesiones cita ${idCita}:`, sesiones);
         this.cdr.detectChanges();
       },
-      error: err => this.log.error('Error en la operación', err)
+      error: err => console.error(err)
     });
   }
 
@@ -166,7 +166,7 @@ export class Historiaclinica implements OnInit {
           alert('Paciente actualizado correctamente');
         },
         error: (err) => {
-          this.log.error('Error en la operación', err);
+          console.error(err);
           alert('Error al actualizar paciente');
         }
       });
@@ -183,7 +183,7 @@ export class Historiaclinica implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.log.error('Error al actualizar estado:', err);
+        console.error('Error al actualizar estado:', err);
       }
     });
   }
@@ -211,7 +211,7 @@ export class Historiaclinica implements OnInit {
           history.back();
         },
         error: (err) => {
-          this.log.error('Error en la operación', err);
+          console.error(err);
           alert('❌ Error al eliminar paciente');
         }
       });
