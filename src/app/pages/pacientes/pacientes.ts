@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
 import { Paciente } from '../../models/paciente.model';
 import { CommonModule, DatePipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
+import { LoggerService } from '../../core/logger.service';
 
 @Component({
   selector: 'app-pacientes',
@@ -13,6 +14,7 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrl: './pacientes.css',
 })
 export class Pacientes implements OnInit {
+  private readonly log = inject(LoggerService);
 
   pacientes: Paciente[] = [];
 
@@ -51,7 +53,7 @@ export class Pacientes implements OnInit {
 
         this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => this.log.error('Error en la operación', err)
     });
   }
 

@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Paciente } from '../../models/paciente.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { LoggerService } from '../../core/logger.service';
 
 @Component({
   selector: 'app-nuevopaciente',
@@ -14,6 +15,7 @@ import Swal from 'sweetalert2';
   styleUrl: './nuevopaciente.css',
 })
 export class Nuevopaciente {
+  private readonly log = inject(LoggerService);
   
   pacienteForm: FormGroup;
 
@@ -38,8 +40,6 @@ export class Nuevopaciente {
   }
 
   guardar() {
-    console.log(this.pacienteForm.value);
-    console.log(this.pacienteForm.valid);
 
 
     if (this.pacienteForm.invalid) {
@@ -61,7 +61,7 @@ export class Nuevopaciente {
           return;
         }
 
-          console.error(err);
+          this.log.error('Error en la operación', err);
           Swal.fire({ icon: 'error', title: 'Error al registrar paciente' });
       },
     })
