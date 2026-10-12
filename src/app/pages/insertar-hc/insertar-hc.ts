@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { Paciente } from '../../models/paciente.model';
@@ -12,6 +12,7 @@ import { DoctorService } from '../../services/doctor.service';
 import { Doctor } from '../../models/doctor.model';
 import { DiagnosticoService } from '../../services/diagnostico.service';
 import { Diagnostico } from '../../models/diagnostico.model';
+import { LoggerService } from '../../core/logger.service';
 
 interface Documento {
   id: number;
@@ -29,6 +30,7 @@ interface Documento {
   styleUrl: './insertar-hc.css',
 })
 export class InsertarHc implements OnInit {
+  private readonly log = inject(LoggerService);
 
   archivoSeleccionado: File | null = null;
   previewUrl: SafeResourceUrl | null = null;
@@ -155,7 +157,6 @@ export class InsertarHc implements OnInit {
           categoria: this.docTipo
         }))
       };
-      console.log(payload);
 
       await firstValueFrom(this.historialClinicaService.crear(payload));
 
@@ -166,7 +167,7 @@ export class InsertarHc implements OnInit {
       this.docSeleccionado = null;
 
     } catch (error) {
-      console.error('Error al guardar:', error);
+      this.log.error('Error al guardar:', error);
       Swal.fire({ icon: 'error', title: 'Ocurrió un error al guardar. Revisa la consola.' });
     } finally {
       this.subiendo = false;
@@ -208,25 +209,22 @@ export class InsertarHc implements OnInit {
 
 
   buscarPacientePorDNI() {
-    console.log('🔍 Buscando paciente con DNI:', this.paciente.dni);
 
     if (!this.paciente.dni.trim()) {
-      console.warn('⚠️ DNI vacío, no se puede buscar');
+      this.log.warn('DNI vacío, no se puede buscar');
       return;
     }
 
     this.pacienteService.buscarPorDNI(this.paciente.dni).subscribe({
       next: (data: any) => {
-        console.log('📦 Respuesta del servidor:', data);
         this.paciente = {
           ...data,
           nacimiento: data.nacimiento
         };
         this.cd.detectChanges();
-        console.log('✅ Paciente encontrado:', data.amaterno, data.apaterno, data.nombre + ' - DNI: ' + data.dni);
       },
       error: (error) => {
-        console.error('❌ Error al buscar paciente por DNI:', error);
+        this.log.error('Error al buscar paciente por DNI:', error);
       }
     });
   }
@@ -254,7 +252,6 @@ export class InsertarHc implements OnInit {
     this.docSeleccionado = this.documentos.length - 1;
     this.paginaActual = this.documentos.length;
     
-    console.log('Documento agregado:', nuevoDocumento.label);
     this.cd.detectChanges();
   }
 
@@ -275,7 +272,7 @@ export class InsertarHc implements OnInit {
         this.responsableFiltrados = [...this.responsable];
         this.cd.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => this.log.error('Error en la operación', err)
     });
   }
 
@@ -285,7 +282,7 @@ export class InsertarHc implements OnInit {
         this.allDiagnosticos = data.map(d => ({ ...d }));
         this.cd.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => this.log.error('Error en la operación', err)
     });
   }
 
