@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { DisponibilidadDTO } from '../../models/disponibilidad.model';
 import Swal from 'sweetalert2';
@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { CalendarioGuardado } from '../../models/calendarioGuardado.model';
 import { DisponibilidadView } from '../../models/disponivilidadView.model';
 import { construirMes, diasVaciosAntesDelPrimero } from '../../utils/calendario.util';
+import { LoggerService } from '../../core/logger.service';
 
 interface TurnoDia {
   nombre: string;
@@ -32,6 +33,7 @@ interface DiaCalendario {
   styleUrl: './calendario.css'
 })
 export class Calendario implements OnInit {
+  private readonly log = inject(LoggerService);
 
   diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
   calendario: DiaCalendario[] = [];
@@ -193,7 +195,7 @@ export class Calendario implements OnInit {
         this.calendariosGuardados = data;
         this.cd.detectChanges(); // 🔑 CLAVE
       },
-      error: err => console.error(err)
+      error: err => this.log.error('Error en la operación', err)
     });
   }
 
@@ -202,7 +204,7 @@ export class Calendario implements OnInit {
       next: data => {
         this.turnos = data;
       },
-      error: err => console.error(err)
+      error: err => this.log.error('Error en la operación', err)
     });
   }
 
@@ -212,7 +214,7 @@ export class Calendario implements OnInit {
       next: (data) => {
         this.doctores = data;
       },
-      error: err => console.error(err)
+      error: err => this.log.error('Error en la operación', err)
     });
   }
 
@@ -327,7 +329,7 @@ export class Calendario implements OnInit {
 
     this.disponibilidadService.guardarMasivo(payload).subscribe({
       next: () => Swal.fire({ icon: 'success', title: '✅ Turnos guardados correctamente', timer: 2000, showConfirmButton: false }),
-      error: err => console.error('❌ Error al guardar', err)
+      error: err => this.log.error('Error al guardar', err)
     });
   }
 
@@ -339,7 +341,7 @@ export class Calendario implements OnInit {
     );
 
     if (!doctor) {
-      console.warn('Doctor no encontrado:', nombreExcel);
+      this.log.warn('Doctor no encontrado:', nombreExcel);
       return 0; // o lanzar error
     }
 
@@ -354,7 +356,7 @@ export class Calendario implements OnInit {
     );
 
     if (!turno) {
-      console.warn('Turno no encontrado:', codigoExcel);
+      this.log.warn('Turno no encontrado:', codigoExcel);
       return 0;
     }
 
@@ -387,7 +389,7 @@ export class Calendario implements OnInit {
               this.generarCalendario();
             }
           },
-          error: err => console.error('❌ Error al eliminar', err)
+          error: err => this.log.error('Error al eliminar', err)
         });
     });
   }

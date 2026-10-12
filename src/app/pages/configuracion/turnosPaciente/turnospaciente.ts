@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DoctorService } from '../../../services/doctor.service';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HorarioService } from '../../../services/horario.service';
 import Swal from 'sweetalert2';
+import { LoggerService } from '../../../core/logger.service';
 
 @Component({
   selector: 'app-turnospaciente',
@@ -13,6 +14,7 @@ import Swal from 'sweetalert2';
   styleUrl: './turnospaciente.css',
 })
 export class Turnospaciente implements OnInit {
+  private readonly log = inject(LoggerService);
 
   // 👉 HORAS DEL DOCTOR
   horasSeleccionadas: string[] = [];
@@ -61,11 +63,10 @@ export class Turnospaciente implements OnInit {
     this.horarioService.getHorasDoctor(this.doctor.id)
       .subscribe({
         next: (horas) => {
-          console.log('HORAS BD:', horas);
           this.horasSeleccionadas = horas;
           this.cdr.detectChanges();
         },
-        error: err => console.error(err)
+        error: err => this.log.error('Error en la operación', err)
       });
   }
 
@@ -92,7 +93,7 @@ export class Turnospaciente implements OnInit {
             Swal.fire({ icon: 'success', title: 'Horario guardado correctamente', timer: 1400, showConfirmButton: false });
             this.cargarHorasDoctor(); // 🔥 CLAVE
           },
-        error: err => console.error(err)
+        error: err => this.log.error('Error en la operación', err)
       });
   }
   // ==========================
@@ -112,7 +113,7 @@ cargarDatos(nombre: string) {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error(err);
+        this.log.error('Error en la operación', err);
         this.cargando = false;
       }
     });

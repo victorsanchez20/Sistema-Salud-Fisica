@@ -9,6 +9,7 @@ import { DoctorService } from '../../services/doctor.service';
 import { DisponibilidadDoctorService } from '../../services/disponibilidad-doctor.service';
 import { HistorialClinicaService } from '../../services/historial-clinica.service';
 import { DiagnosticoService } from '../../services/diagnostico.service';
+import { LoggerService } from '../../core/logger.service';
 
 interface Metricas {
   pacientes: number;
@@ -50,6 +51,7 @@ interface EstadoCitas {
   styleUrl: './inicio.css',
 })
 export class Inicio implements OnInit {
+  private readonly log = inject(LoggerService);
 
   sesiones: any[] = [];
   cargando = true;
@@ -145,7 +147,7 @@ export class Inicio implements OnInit {
           }
       },
 
-      error: (err) => console.error('Error al cargar total de pacientes:', err),
+      error: (err) => this.log.error('Error al cargar total de pacientes:', err),
 
       complete: () => {
         this.cargando = false;

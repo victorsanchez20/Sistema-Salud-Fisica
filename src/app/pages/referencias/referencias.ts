@@ -1,7 +1,8 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReferenciasService, ReferenciaItem } from '../../services/referencias.service';
+import { LoggerService } from '../../core/logger.service';
 
 interface Referencia {
   creado: string;
@@ -21,6 +22,7 @@ interface Referencia {
   styleUrl: './referencias.css',
 })
 export class Referencias {
+  private readonly log = inject(LoggerService);
   tipodoc = '';
   dni = '';
   cargando = false;
@@ -64,7 +66,7 @@ export class Referencias {
         try { this.cdr.detectChanges(); } catch (e) { /* noop */ }
       },
       error: (err) => {
-        console.error('Error al cargar referencias:', err);
+        this.log.error('Error al cargar referencias:', err);
         this.error = 'No se pudo cargar la lista de referencias. Verifique la conexión o el servidor.';
         this.referencias = [];
         this.total = 0;
