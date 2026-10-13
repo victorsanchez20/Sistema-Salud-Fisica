@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ArchivoHC, HistoriaClinicaResponse, HistorialClinicaService } from '../../services/historial-clinica.service';
 import { SupabaseService } from '../../services/supabase.service';
 import { LoggerService } from '../../core/logger.service';
+import { NotificacionService } from '../../core/notificacion.service';
 
 @Component({
   selector: 'app-modal-hc',
@@ -15,6 +16,7 @@ import { LoggerService } from '../../core/logger.service';
 })
 export class ModalHcComponent {
   private readonly log = inject(LoggerService);
+  private readonly avisos = inject(NotificacionService);
   @Input() hc!: HistoriaClinicaResponse;
   @Input() pacienteId!: number;
   @Output() cerrar = new EventEmitter<void>();
@@ -82,7 +84,7 @@ export class ModalHcComponent {
       },
       error: (err) => {
         this.log.error('Error al actualizar HC:', err);
-        alert('Error al actualizar la historia clinica');
+        this.avisos.error('Error al actualizar la historia clinica');
       }
     });
   }
@@ -105,7 +107,7 @@ export class ModalHcComponent {
       });
     } catch (e) {
       this.log.error('Error al subir archivo:', e);
-      alert('Error al subir el archivo');
+      this.avisos.error('Error al subir el archivo');
     } finally {
       this.subiendo = false;
     }
@@ -120,7 +122,7 @@ export class ModalHcComponent {
   }
 
   async eliminarArchivoPerma(archivo: ArchivoHC) {
-    if (!confirm('¿Eliminar este documento de la historia clínica?')) return;
+    if (!(await this.avisos.confirmar('¿Eliminar este documento de la historia clínica?'))) return;
 
     try {
       await this.supabaseService.eliminarArchivo(archivo.url);
@@ -143,12 +145,12 @@ export class ModalHcComponent {
         },
         error: (err) => {
           this.log.error('Error al eliminar archivo:', err);
-          alert('Error al eliminar el archivo');
+          this.avisos.error('Error al eliminar el archivo');
         }
       });
     } catch (e) {
       this.log.error('Error al eliminar de Supabase:', e);
-      alert('Error al eliminar el archivo del almacenamiento');
+      this.avisos.error('Error al eliminar el archivo del almacenamiento');
     }
   }
 
@@ -187,12 +189,12 @@ export class ModalHcComponent {
         },
         error: (err) => {
           this.log.error('Error al agregar archivo:', err);
-          alert('Error al guardar el archivo');
+          this.avisos.error('Error al guardar el archivo');
         }
       });
     } catch (e) {
       this.log.error('Error al subir a Supabase:', e);
-      alert('Error al subir el archivo');
+      this.avisos.error('Error al subir el archivo');
     } finally {
       this.subiendo = false;
     }
