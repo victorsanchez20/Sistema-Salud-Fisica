@@ -10,6 +10,7 @@ import { SesionService } from '../../services/sesion.service';
 import { HistoriaClinicaResponse, HistorialClinicaService } from '../../services/historial-clinica.service';
 import { ModalHcComponent } from '../../components/modal-hc/modal-hc';
 import { LoggerService } from '../../core/logger.service';
+import { NotificacionService } from '../../core/notificacion.service';
 
 @Component({
   selector: 'app-historiaclinica',
@@ -20,6 +21,7 @@ import { LoggerService } from '../../core/logger.service';
 })
 export class Historiaclinica implements OnInit {
   private readonly log = inject(LoggerService);
+  private readonly avisos = inject(NotificacionService);
 
   hc!: string;
   paciente!: Paciente | null;
@@ -163,11 +165,11 @@ export class Historiaclinica implements OnInit {
           };
           this.editar = false;
           this.cdr.detectChanges();
-          alert('Paciente actualizado correctamente');
+          this.avisos.exito('Paciente actualizado correctamente');
         },
         error: (err) => {
           this.log.error('Error en la operación', err);
-          alert('Error al actualizar paciente');
+          this.avisos.error('Error al actualizar paciente');
         }
       });
   }
@@ -188,11 +190,11 @@ export class Historiaclinica implements OnInit {
     });
   }
 
-  eliminarPaciente() {
+  async eliminarPaciente() {
     if (!this.paciente || !this.paciente.id) return;
 
-    const confirmado = confirm(
-      '⚠️ ¿Estás seguro de eliminar este paciente?\n\n' +
+    const confirmado = await this.avisos.confirmar(
+      '¿Estás seguro de eliminar este paciente?',
       'Se eliminarán también sus citas y sesiones.'
     );
 
@@ -201,7 +203,7 @@ export class Historiaclinica implements OnInit {
     this.pacienteService.eliminar(this.paciente.id)
       .subscribe({
         next: () => {
-          alert('✅ Paciente eliminado correctamente');
+          this.avisos.exito('Paciente eliminado correctamente');
 
           // limpiar vista
           this.paciente = null;
@@ -212,7 +214,7 @@ export class Historiaclinica implements OnInit {
         },
         error: (err) => {
           this.log.error('Error en la operación', err);
-          alert('❌ Error al eliminar paciente');
+          this.avisos.error('Error al eliminar paciente');
         }
       });
   }
