@@ -5,6 +5,7 @@ import { Paciente } from '../../models/paciente.model';
 import { CommonModule, DatePipe, NgFor } from '@angular/common';
 import { CitaService } from '../../services/cita.service';
 import { Cita } from '../../models/cita.model';
+import { Sesion } from '../../models/sesion.model';
 import { FormsModule } from "@angular/forms";
 import { SesionService } from '../../services/sesion.service';
 import { HistoriaClinicaResponse, HistorialClinicaService } from '../../services/historial-clinica.service';
@@ -140,7 +141,7 @@ export class Historiaclinica implements OnInit {
     return cita.id;
   }
 
-  trackBySesion(index: number, sesion: any) {
+  trackBySesion(index: number, sesion: Sesion) {
     return sesion.id;
   }
 
@@ -174,11 +175,11 @@ export class Historiaclinica implements OnInit {
       });
   }
 
-  editarEstadoSesion(sesion: any) {
+  editarEstadoSesion(sesion: Sesion) {
     this.sesionEditando = sesion.id;
   }
 
-  guardarEstadoSesion(sesion: any) {
+  guardarEstadoSesion(sesion: Sesion) {
     this.sesionService.actualizarEstado(sesion.id, sesion.estado).subscribe({
       next: () => {
         this.sesionEditando = null;

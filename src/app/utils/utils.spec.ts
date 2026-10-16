@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { construirMes, diasVaciosAntesDelPrimero, cantidadDiasDelMes, formatearFechaIso } from './calendario.util';
 import { construirPayloadCita } from './cita-payload.util';
 import { filtrarHorasPorTurno } from '../config/turnos.config';
+import { archivoSeleccionado } from './archivo.util';
 
 describe('calendario.util', () => {
   it('octubre 2026 empieza en jueves (3 celdas vacías) y tiene 31 días', () => {
@@ -60,5 +61,18 @@ describe('construirPayloadCita', () => {
     expect(payload.paciente).toBe(1);
     expect(payload.doctor).toBe(2);
     expect(payload.diagnostico).toBe(3);
+  });
+});
+
+describe('archivo.util', () => {
+  it('devuelve el primer archivo del input', () => {
+    const archivo = new File(['x'], 'hc.pdf', { type: 'application/pdf' });
+    const evento = { target: { files: [archivo] } } as unknown as Event;
+    expect(archivoSeleccionado(evento)).toBe(archivo);
+  });
+
+  it('devuelve null si no se eligió ningún archivo', () => {
+    expect(archivoSeleccionado({ target: { files: [] } } as unknown as Event)).toBeNull();
+    expect(archivoSeleccionado({ target: null } as unknown as Event)).toBeNull();
   });
 });
