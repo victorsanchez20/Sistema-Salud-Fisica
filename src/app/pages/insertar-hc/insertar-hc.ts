@@ -13,6 +13,7 @@ import { Doctor } from '../../models/doctor.model';
 import { DiagnosticoService } from '../../services/diagnostico.service';
 import { Diagnostico } from '../../models/diagnostico.model';
 import { LoggerService } from '../../core/logger.service';
+import { archivoSeleccionado } from '../../utils/archivo.util';
 
 interface Documento {
   id: number;
@@ -229,8 +230,8 @@ export class InsertarHc implements OnInit {
     });
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
+  onFileSelected(event: Event) {
+    const file = archivoSeleccionado(event);
     if(!file) return;
 
     const tipoArchivo = file.type;

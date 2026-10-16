@@ -6,7 +6,7 @@ export interface Cita {
   numero_cita: number;
   id_doctor: { nombre: string; };
   id_diagnostico: { nombre: string; };
-  sesiones: any[];
+  sesiones: Sesion[];
 }
 
 /** Sesión tal como la espera el backend al registrar una cita. */

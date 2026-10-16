@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SesionService } from '../../services/sesion.service';
+import { Sesion } from '../../models/sesion.model';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { PacienteService } from '../../services/paciente.service';
 import { catchError, forkJoin, map, of } from 'rxjs';
@@ -53,7 +54,7 @@ interface EstadoCitas {
 export class Inicio implements OnInit {
   private readonly log = inject(LoggerService);
 
-  sesiones: any[] = [];
+  sesiones: Sesion[] = [];
   cargando = true;
   fechaMostrada!: string;
   nombreDoctor!: string;
@@ -143,7 +144,7 @@ export class Inicio implements OnInit {
 
         if (sesiones.length) {
             this.fechaMostrada = sesiones[0].fecha;
-            this.nombreDoctor = sesiones[0].id_cita.id_doctor?.nombre;
+            this.nombreDoctor = sesiones[0].id_cita?.id_doctor?.nombre ?? '';
           }
       },
 

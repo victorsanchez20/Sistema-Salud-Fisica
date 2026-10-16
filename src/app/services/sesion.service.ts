@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../core/api.service';
+import { Sesion } from '../models/sesion.model';
 
 @Injectable({ providedIn: 'root' })
 export class SesionService extends ApiService {
   private readonly api = this.url('/api/terapia/sesion');
 
   listarPorCita(idCita: number) {
-    return this.http.get<any[]>(`${this.api}/cita/${idCita}`);
+    return this.http.get<Sesion[]>(`${this.api}/cita/${idCita}`);
   }
 
   getHorasOcupadas(fecha: string, doctorId: number) {
@@ -16,12 +17,12 @@ export class SesionService extends ApiService {
     );
   }
 
-  getSesionesProximas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.api}/proximas`);
+  getSesionesProximas(): Observable<Sesion[]> {
+    return this.http.get<Sesion[]>(`${this.api}/proximas`);
   }
 
   actualizarEstado(id: number, estado: number) {
-    return this.http.put<any>(`${this.api}/${id}/estado`, { estado });
+    return this.http.put<Sesion>(`${this.api}/${id}/estado`, { estado });
   }
 
   contarEstados() {

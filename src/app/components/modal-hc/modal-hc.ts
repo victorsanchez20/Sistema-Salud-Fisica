@@ -6,6 +6,7 @@ import { ArchivoHC, HistoriaClinicaResponse, HistorialClinicaService } from '../
 import { SupabaseService } from '../../services/supabase.service';
 import { LoggerService } from '../../core/logger.service';
 import { NotificacionService } from '../../core/notificacion.service';
+import { archivoSeleccionado } from '../../utils/archivo.util';
 
 @Component({
   selector: 'app-modal-hc',
@@ -89,8 +90,8 @@ export class ModalHcComponent {
     });
   }
 
-  async onFileSelected(event: any) {
-    const file: File = event.target?.files?.[0];
+  async onFileSelected(event: Event) {
+    const file = archivoSeleccionado(event);
     if (!file) return;
 
     this.subiendo = true;
@@ -154,8 +155,8 @@ export class ModalHcComponent {
     }
   }
 
-  async agregarArchivo(event: any) {
-    const file: File = event.target?.files?.[0];
+  async agregarArchivo(event: Event) {
+    const file = archivoSeleccionado(event);
     if (!file) return;
 
     this.subiendo = true;
