@@ -114,7 +114,7 @@ export class Inicio implements OnInit {
       ),
       pacientesPorMes: this.pacienteService.cantidadPacientePorMes().pipe(catchError(() => of({}))),
       totalDisponibilidad: this.disponibilidadService.cantidadDisponibilidad().pipe(catchError(() => of(0))),
-      hcmayor: this.historialClinicaService.ultimahc().pipe(catchError(() => of(0))),
+      hcmayor: this.pacienteService.ultimahc().pipe(catchError(() => of(0))),
       totalDiagnostico: this.diagnosticoService.totalDiagnostico().pipe(catchError(() => of(0))),
       citasPorFecha: this.disponibilidadService.cantidadDisponibilidadPorFecha().pipe(catchError(() => of({}))),
       sessionEstados: this.sesionService.contarEstados().pipe(catchError(() => of({ registrada: 0, completada: 0, cancelada: 0 }))),

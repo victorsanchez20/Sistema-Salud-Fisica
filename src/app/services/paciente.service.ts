@@ -34,4 +34,8 @@ export class PacienteService extends CrudApiService<Paciente> {
   pacientesPorEdad(): Observable<{ [key: string]: number }> {
     return this.http.get<{ [key: string]: number }>(`${this.endpoint}/pacientes-por-edad`);
   }
+
+  ultimahc() {
+    return this.http.get<number>(`${this.resource}/ultima-hc`);
+  }
 }
