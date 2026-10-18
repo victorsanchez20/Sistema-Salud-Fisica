@@ -44,8 +44,4 @@ export class HistorialClinicaService extends ApiService {
   actualizar(id: number, dto: HistoriaClinicaUpdate): Observable<any> {
     return this.http.put(`${this.api}/${id}`, dto);
   }
-
-  ultimahc() {
-    return this.http.get<number>(`${this.api}/ultima-hc`);
-  }
 }
